@@ -7,3 +7,15 @@
 body {
   min-height: 100vh;
 }
+
+:root {
+  --element-primary: #eb5440;
+  --element-secondary: #4a4b4c;
+  --element-tertiary-1: #e8e8e8;
+  --element-tertiary-2: #c3c3c3;
+  --element-background-1: #f6f6f6;
+  --element-background-2: #ffffff;
+  --text-primary: #000000;
+  --text-secondary: #4a4b4c;
+  --text-hyperlink: #067bc2;
+}
