@@ -21,6 +21,7 @@ header {
   display: flex;
   position: fixed;
   background-color: var(--element-background-2);
+  font-family: 'Montserrat', sans-serif;
 }
 .wrapper {
   display: flex;
@@ -37,6 +38,13 @@ header {
   margin-left: 50px;
   font-size: 18px;
   text-decoration: none;
+  color: var(--element-tertiary-2);
+
+  font-weight: 500;
+}
+
+a.router-link-active {
   color: var(--text-primary);
+  font-weight: 700;
 }
 </style>
