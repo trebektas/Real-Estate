@@ -38,7 +38,7 @@ function formatPrice(price) {
             <div class="house-location info">
               {{ house.location.street }} {{ house.location.houseNumber }}
             </div>
-            <div class="info">€ {{ formatPrice(house.price) }}</div>
+            <div class="price-text info">€ {{ formatPrice(house.price) }}</div>
             <div class="zip-code info">{{ house.location.zip }} {{ house.location.city }}</div>
             <div class="rooms-size">
               <span class="icons"><img :src="bedIcon" alt="Bed Icon" /></span
@@ -67,11 +67,12 @@ section {
   background-color: var(--element-background-2);
   width: 1320px;
   border-radius: 7px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.12);
 }
 
 .house-image img {
-  width: 140px;
-  height: 140px;
+  width: 130px;
+  height: 130px;
   border-radius: 5px;
   object-fit: cover;
 }
@@ -83,18 +84,21 @@ span img {
 .container-information {
   margin-left: 20px;
   color: var(--text-secondary);
+  font-family: 'Open Sans', sans-serif;
 }
 
 .house-location {
   color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
 }
 
 .house-location::first-letter {
   text-transform: uppercase;
 }
 
-.zip-code {
-  font-weight: 400;
+.price-text {
+  font-weight: 600;
 }
 
 .icons {

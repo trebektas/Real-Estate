@@ -4,7 +4,7 @@ import HousesOverview from '../components/HousesOverview.vue'
 
 <template>
   <div class="wrapper">
-    <h1>This is a home page</h1>
+    <h1>Houses</h1>
     <HousesOverview />
   </div>
 </template>
