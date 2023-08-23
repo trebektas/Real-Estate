@@ -22,12 +22,13 @@ header {
   position: fixed;
   background-color: var(--element-background-2);
   font-family: 'Montserrat', sans-serif;
+  height: 100px;
 }
 .wrapper {
   display: flex;
   align-items: center;
   width: 1320px;
-  margin: 20px auto;
+  margin: 0 auto;
 }
 
 .wrapper img {

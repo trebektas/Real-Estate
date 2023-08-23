@@ -1,7 +1,12 @@
-<script setup></script>
+<script setup>
+import HousesOverview from '../components/HousesOverview.vue'
+</script>
 
 <template>
-  <main>
-    <h1>This is a home page</h1>
-  </main>
+  <div class="wrapper">
+    <h1>Houses</h1>
+    <HousesOverview />
+  </div>
 </template>
+
+<style></style>

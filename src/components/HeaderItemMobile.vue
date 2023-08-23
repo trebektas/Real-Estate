@@ -41,7 +41,7 @@ export default {}
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  height: 15vh;
+  height: 10vh;
   position: fixed;
   bottom: 0;
   background-color: var(--element-background-2);
