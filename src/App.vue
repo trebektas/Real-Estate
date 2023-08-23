@@ -5,17 +5,28 @@ import HeaderItemMobile from './components/HeaderItemMobile.vue'
 </script>
 
 <template>
-  <HeaderItem v-if="!isMobile()" />
+  <HeaderItem v-if="!mobileView" />
   <HeaderItemMobile v-else />
   <main><RouterView /></main>
 </template>
 
 <script>
 export default {
+  data: () => {
+    return {
+      mobileView: false
+    }
+  },
+
+  mounted() {
+    window.addEventListener('resize', this.isMobile)
+  },
+  unmounted() {
+    window.removeEventListener('resize', this.isMobile)
+  },
   methods: {
     isMobile() {
-      if (window.innerWidth <= 375) return true
-      else return false
+      this.mobileView = window.innerWidth <= 375
     }
   }
 }
