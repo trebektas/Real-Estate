@@ -19,15 +19,19 @@ export default {
   },
 
   mounted() {
-    window.addEventListener('resize', this.isMobile)
+    window.addEventListener('resize', this.checkMobile)
   },
   unmounted() {
-    window.removeEventListener('resize', this.isMobile)
+    window.removeEventListener('resize', this.checkMobile)
   },
   methods: {
-    isMobile() {
-      this.mobileView = window.innerWidth <= 375
+    checkMobile() {
+      this.mobileView = screen.width <= 375 ? true : false
     }
+  },
+
+  created() {
+    this.checkMobile()
   }
 }
 </script>
