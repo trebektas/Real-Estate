@@ -6,6 +6,8 @@ import SortHouses from '../components/SortHouses.vue'
 
 import { ref } from 'vue'
 const houses = ref(null)
+const filteredHouses = ref([])
+
 async function getHouses() {
   try {
     const config = {
@@ -34,7 +36,8 @@ getHouses()
       <div class="overview-header overview-search-sort"><SearchBar /><SortHouses /></div>
     </section>
 
-    <HousesOverview v-if="houses" :housesData="houses" />
+    <HousesOverview v-if="filteredHouses.length > 0" :housesData="filteredHouses" />
+    <HousesOverview v-else :housesData="houses" />
   </div>
 </template>
 

@@ -1,31 +1,24 @@
 <script setup>
 import clearIcon from '../assets/search-bar/ic_clear@3x.png'
+import { ref } from 'vue'
+const searchValue = ref({ isSearched: false, searchedText: null })
+
+function clearInput() {
+  searchValue.value = { isSearched: false, searchedText: null }
+  console.log(`Cleared search bar`)
+}
+
+function submitSearch() {
+  console.log(`Searched: ${searchValue.value.searchedText}`)
+}
 </script>
 
 <template>
   <form class="search-form" @submit.prevent="submitSearch">
-    <input type="text" placeholder="Search for a house" v-model="inputValue" />
-    <img class="clear-icon" v-if="inputValue" :src="clearIcon" @click="clearInput" />
+    <input type="text" placeholder="Search for a house" v-model="searchValue.searchedText" />
+    <img class="clear-icon" v-if="searchValue.searchedText" :src="clearIcon" @click="clearInput" />
   </form>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      inputValue: ''
-    }
-  },
-  methods: {
-    clearInput() {
-      this.inputValue = ''
-    },
-    submitSearch() {
-      console.log(`Searched: ${this.inputValue}`)
-    }
-  }
-}
-</script>
 
 <style scoped>
 .search-form {
