@@ -3,35 +3,26 @@ import bathIcon from '../assets/house-card/ic_bath@3x.png'
 import bedIcon from '../assets/house-card/ic_bed@3x.png'
 import sizeIcon from '../assets/house-card/ic_size@3x.png'
 
-import { ref } from 'vue'
-const houses = ref(null)
-async function getHouses() {
-  try {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Api-Key': 'xD7bh1ZoA3mRlwrv8dYaNgXGLuKe_4JP'
-      }
-    }
-    const response = await fetch('https://api.intern.d-tt.nl/api/houses', config)
-    houses.value = await response.json()
-    console.log(houses)
-  } catch (error) {
-    console.log('Error occurred:', error)
-  }
-}
-
-getHouses()
-
 function formatPrice(price) {
   return new Intl.NumberFormat('en-DE').format(price)
 }
+const props = defineProps({
+  housesData: {
+    type: Array,
+    required: true
+  },
+  countFilteredHouses: Number
+})
 </script>
 
 <template>
-  <section>
+  <section class="section-overview">
+    <h2 v-if="props.countFilteredHouses" class="counter-results">
+      {{ props.countFilteredHouses }}
+      {{ props.countFilteredHouses === 1 ? 'result' : 'results' }} found
+    </h2>
     <ul class="houses-list">
-      <li v-for="house in houses" :key="house.id" class="house-card">
+      <li v-for="house in props.housesData" :key="house.id" class="house-card">
         <div class="container-house">
           <div class="house-image"><img :src="house.image" :alt="house.id" /></div>
           <div class="container-information">
@@ -55,9 +46,19 @@ function formatPrice(price) {
   </section>
 </template>
 
-<style scoped>
-section {
-  font-size: 16px;
+<style>
+.counter-results {
+  margin: 20px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+.houses-list {
+  margin-top: 10px;
+}
+
+.house-card {
+  list-style: none;
 }
 .container-house {
   display: flex;
@@ -65,7 +66,7 @@ section {
   margin: 0 auto 30px;
   padding: 20px;
   background-color: var(--element-background-2);
-  width: 1320px;
+
   border-radius: 7px;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.12);
 }
@@ -120,11 +121,11 @@ span img {
 }
 
 @media only screen and (max-width: 375px) {
-  section {
-    font-size: 12px;
+  .counter-results {
+    font-size: 14px;
   }
+
   .container-house {
-    width: 340px;
     margin: 0 auto 15px;
     padding: 10px;
   }
