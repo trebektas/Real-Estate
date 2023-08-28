@@ -1,22 +1,31 @@
 <script setup>
 import clearIcon from '../assets/search-bar/ic_clear@3x.png'
 import { ref } from 'vue'
-const searchValue = ref({ isSearched: false, searchedText: null })
+import { useHouseStore } from '../stores/HousesStore'
+
+const searchQuery = ref(null)
+const houseStore = useHouseStore()
 
 function clearInput() {
-  searchValue.value = { isSearched: false, searchedText: null }
-  console.log(`Cleared search bar`)
+  searchQuery.value = null
+  houseStore.filteredData = []
+  houseStore.isSearched = false
 }
 
 function submitSearch() {
-  console.log(`Searched: ${searchValue.value.searchedText}`)
+  if (searchQuery.value) {
+    houseStore.filteredHouses(searchQuery.value.trim())
+    houseStore.isSearched = true
+  } else {
+    clearInput()
+  }
 }
 </script>
 
 <template>
   <form class="search-form" @submit.prevent="submitSearch">
-    <input type="text" placeholder="Search for a house" v-model="searchValue.searchedText" />
-    <img class="clear-icon" v-if="searchValue.searchedText" :src="clearIcon" @click="clearInput" />
+    <input type="text" placeholder="Search for a house" v-model="searchQuery" />
+    <img class="clear-icon" v-if="searchQuery" :src="clearIcon" @click="clearInput" />
   </form>
 </template>
 
@@ -29,7 +38,7 @@ function submitSearch() {
 }
 
 input {
-  width: 400px;
+  width: 450px;
   padding: 10px 20px 10px 50px;
   background: var(--element-tertiary-1) url('../assets/search-bar/ic_search@3x.png') no-repeat 20px
     center;

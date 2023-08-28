@@ -6,12 +6,21 @@ import sizeIcon from '../assets/house-card/ic_size@3x.png'
 function formatPrice(price) {
   return new Intl.NumberFormat('en-DE').format(price)
 }
-
-const props = defineProps(['housesData'])
+const props = defineProps({
+  housesData: {
+    type: Array,
+    required: true
+  },
+  countFilteredHouses: Number
+})
 </script>
 
 <template>
   <section class="section-overview">
+    <h2 v-if="props.countFilteredHouses" class="counter-results">
+      {{ props.countFilteredHouses }}
+      {{ props.countFilteredHouses === 1 ? 'result' : 'results' }} found
+    </h2>
     <ul class="houses-list">
       <li v-for="house in props.housesData" :key="house.id" class="house-card">
         <div class="container-house">
@@ -37,11 +46,15 @@ const props = defineProps(['housesData'])
   </section>
 </template>
 
-<style scoped>
-.section-overview {
-  font-size: 16px;
-  width: 1320px;
-  margin: 0 auto;
+<style>
+.counter-results {
+  margin: 20px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+.houses-list {
+  margin-top: 10px;
 }
 
 .house-card {
@@ -108,10 +121,10 @@ span img {
 }
 
 @media only screen and (max-width: 375px) {
-  .section-overview {
-    font-size: 12px;
-    width: 340px;
+  .counter-results {
+    font-size: 14px;
   }
+
   .container-house {
     margin: 0 auto 15px;
     padding: 10px;
