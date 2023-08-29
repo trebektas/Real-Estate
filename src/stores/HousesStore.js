@@ -5,7 +5,8 @@ export const useHouseStore = defineStore('HousesStore', {
     return {
       housesData: [],
       filteredData: [],
-      isSearched: false
+      isSearched: false,
+      sortedByPrice: true
     }
   },
 
@@ -39,10 +40,20 @@ export const useHouseStore = defineStore('HousesStore', {
           }
         }
         const response = await fetch('https://api.intern.d-tt.nl/api/houses', config)
-        this.housesData = await response.json()
+        const data = await response.json()
+        this.housesData = data.sort((a, b) => a.price - b.price)
       } catch (error) {
         console.log('Error occurred:', error)
       }
+    },
+    sortByPrice() {
+      this.housesData = this.housesData.sort((a, b) => a.price - b.price)
+      this.sortedByPrice = true
+    },
+
+    sortBySize() {
+      this.housesData = this.housesData.sort((a, b) => a.size - b.size)
+      this.sortedByPrice = false
     }
   }
 })
