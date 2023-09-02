@@ -44,7 +44,8 @@ main {
 
 @media only screen and (max-width: 375px) {
   main {
-    padding-top: 10px;
+    /*before it was 10px*/
+    padding-top: 0px;
   }
 }
 </style>

@@ -1,8 +1,8 @@
 <script setup>
-import HomeActive from '../assets/mobile/navigation_home_active.png'
-import Home from '../assets/mobile/navigation_home.png'
-import InfoActive from '../assets/mobile/navigation_info_active.png'
-import Info from '../assets/mobile/navigation_info.png'
+import HomeActive from '../assets/icons/ic_mobile_navigarion_home_active@3x.png'
+import Home from '../assets/icons/ic_mobile_navigarion_home@3x.png'
+import InfoActive from '../assets/icons/ic_mobile_navigarion_info_active@3x.png'
+import Info from '../assets/icons/ic_mobile_navigarion_info@3x.png'
 
 import { ref } from 'vue'
 const activeHomeIcon = ref(true)
@@ -45,6 +45,7 @@ export default {}
   position: fixed;
   bottom: 0;
   background-color: var(--element-background-2);
+  z-index: 999;
 }
 
 a img {
