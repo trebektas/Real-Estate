@@ -1,7 +1,10 @@
 <script setup>
 import backIcon from '../assets/icons/ic_back_grey@3x.png'
+import backWhiteIcon from '../assets/icons/ic_back_white@3x.png'
 import editIcon from '../assets/icons/ic_edit@3x.png'
+import editWhiteIcon from '../assets/icons/ic_edit_white@3x.png'
 import deleteIcon from '../assets/icons/ic_delete@3x.png'
+import deleteWhiteIcon from '../assets/icons/ic_delete_white@3x.png'
 import locationIcon from '../assets/icons/ic_location@3x.png'
 import priceIcon from '../assets/icons/ic_price@3x.png'
 import sizeIcon from '../assets/icons/ic_size@3x.png'
@@ -15,10 +18,13 @@ import HouseCard from '../components/HouseCard.vue'
 import { useRoute } from 'vue-router'
 import { useHouseStore } from '../stores/HousesStore'
 import { ref, watch } from 'vue'
+import { useMobileStore } from '../stores/MobileStore'
 
 const route = useRoute()
 const houseStore = useHouseStore()
 const houseDetails = ref([])
+
+const mobileStore = useMobileStore()
 
 const config = {
   headers: {
@@ -53,12 +59,19 @@ watch(
 <template>
   <div class="container-main">
     <div class="back-to-overview">
-      <span @click="$router.push({ name: 'home' })" class="back-icon"><img :src="backIcon" /></span>
+      <span @click="$router.push({ name: 'home' })" class="back-icon"
+        ><img :src="mobileStore.mobileView ? backWhiteIcon : backIcon"
+      /></span>
       <span class="backButtonText">Back to overview</span>
     </div>
     <div class="container-house-details">
       <div v-if="houseDetails" class="house-details">
         <div v-for="house in houseDetails" :key="house.id" class="house-details-wrapper">
+          <!--Edit/Delete Tab Conditions >> house.madeByMe && mobileStore.mobileView-->
+          <div v-if="house.madeByMe && mobileStore.mobileView" class="edit-delete-mobile-tab">
+            <span class="edit-delete-span"><img :src="editWhiteIcon" alt="Edit Icon" /></span
+            ><span class="edit-delete-span"><img :src="deleteWhiteIcon" alt="Delete Icon" /></span>
+          </div>
           <div class="house-details-image"><img :src="house.image" :alt="house.id" /></div>
           <div class="house-details-section">
             <div class="container-house-address">
@@ -66,9 +79,10 @@ watch(
                 {{ house.location.street }}
                 {{ house.location.houseNumber }}
               </div>
-              <div v-if="house.madeByMe" class="edit-delete-tab">
-                <span><img :src="editIcon" alt="Edit Icon" /></span
-                ><span><img :src="deleteIcon" alt="Delete Icon" /></span>
+              <!--Edit/Delete Tab Conditions >> house.madeByMe && !mobileStore.mobileView-->
+              <div v-if="house.madeByMe && !mobileStore.mobileView" class="edit-delete-tab">
+                <span class="edit-delete-span"><img :src="editIcon" alt="Edit Icon" /></span
+                ><span class="edit-delete-span"><img :src="deleteIcon" alt="Delete Icon" /></span>
               </div>
             </div>
 
@@ -176,12 +190,13 @@ watch(
   color: var(--text-primary);
 }
 
-.edit-delete-tab span {
+.edit-delete-span {
   margin-left: 20px;
+  cursor: pointer;
 }
 
-.edit-delete-tab img {
-  width: 20px;
+.edit-delete-span img {
+  height: 20px;
 }
 
 .house-details-location {
@@ -252,6 +267,12 @@ watch(
   .back-to-overview {
     position: absolute;
     margin: 30px 0 0 20px;
+  }
+
+  .edit-delete-mobile-tab {
+    position: absolute;
+    margin: 30px 20px 0 0;
+    right: 0;
   }
 
   .house-details-image {

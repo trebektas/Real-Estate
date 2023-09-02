@@ -1,40 +1,27 @@
 <script setup>
 import { RouterView } from 'vue-router'
+import { onMounted, onUnmounted } from 'vue'
+import { useMobileStore } from './stores/MobileStore'
 import HeaderItem from './components/HeaderItem.vue'
 import HeaderItemMobile from './components/HeaderItemMobile.vue'
+
+const mobileStore = useMobileStore()
+mobileStore.checkMobile()
+
+onMounted(() => {
+  window.addEventListener('resize', mobileStore.checkMobile)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', mobileStore.checkMobile)
+})
 </script>
 
 <template>
-  <HeaderItem v-if="!mobileView" />
+  <HeaderItem v-if="!mobileStore.mobileView" />
   <HeaderItemMobile v-else />
   <main><RouterView /></main>
 </template>
-
-<script>
-export default {
-  data: () => {
-    return {
-      mobileView: false
-    }
-  },
-
-  mounted() {
-    window.addEventListener('resize', this.checkMobile)
-  },
-  unmounted() {
-    window.removeEventListener('resize', this.checkMobile)
-  },
-  methods: {
-    checkMobile() {
-      this.mobileView = screen.width <= 375 ? true : false
-    }
-  },
-
-  created() {
-    this.checkMobile()
-  }
-}
-</script>
 
 <style scoped>
 main {
