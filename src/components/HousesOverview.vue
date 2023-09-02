@@ -1,11 +1,6 @@
 <script setup>
-import bathIcon from '../assets/house-card/ic_bath@3x.png'
-import bedIcon from '../assets/house-card/ic_bed@3x.png'
-import sizeIcon from '../assets/house-card/ic_size@3x.png'
+import HouseCard from './HouseCard.vue'
 
-function formatPrice(price) {
-  return new Intl.NumberFormat('en-DE').format(price)
-}
 const props = defineProps({
   housesData: {
     type: Array,
@@ -23,24 +18,7 @@ const props = defineProps({
     </h2>
     <ul class="houses-list">
       <li v-for="house in props.housesData" :key="house.id" class="house-card">
-        <div class="container-house">
-          <div class="house-image"><img :src="house.image" :alt="house.id" /></div>
-          <div class="container-information">
-            <div class="house-location info">
-              {{ house.location.street }} {{ house.location.houseNumber }}
-            </div>
-            <div class="price-text info">€ {{ formatPrice(house.price) }}</div>
-            <div class="zip-code info">{{ house.location.zip }} {{ house.location.city }}</div>
-            <div class="rooms-size">
-              <span class="icons"><img :src="bedIcon" alt="Bed Icon" /></span
-              ><span class="values">{{ house.rooms.bedrooms }}</span>
-              <span class="icons"><img :src="bathIcon" alt="Bath Icon" /></span>
-              <span class="values">{{ house.rooms.bathrooms }}</span>
-              <span class="icons"><img :src="sizeIcon" alt="Size Icon" /></span>
-              <span class="values">{{ house.size }} m2</span>
-            </div>
-          </div>
-        </div>
+        <HouseCard :house="house" />
       </li>
     </ul>
   </section>
@@ -60,6 +38,11 @@ const props = defineProps({
 .house-card {
   list-style: none;
 }
+
+.house-card a {
+  text-decoration: none;
+}
+
 .container-house {
   display: flex;
   align-items: center;
@@ -78,7 +61,7 @@ const props = defineProps({
   object-fit: cover;
 }
 
-span img {
+.rooms-size span img {
   width: 20px;
 }
 

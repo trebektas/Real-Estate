@@ -1,5 +1,5 @@
 <script setup>
-import clearIcon from '../assets/search-bar/ic_clear@3x.png'
+import clearIcon from '../assets/icons/ic_clear@3x.png'
 import { ref } from 'vue'
 import { useHouseStore } from '../stores/HousesStore'
 
@@ -40,7 +40,7 @@ function submitSearch() {
 input {
   width: 450px;
   padding: 10px 20px 10px 50px;
-  background: var(--element-tertiary-1) url('../assets/search-bar/ic_search@3x.png') no-repeat 20px
+  background: var(--element-tertiary-1) url('../assets/icons/ic_search@3x.png') no-repeat 20px
     center;
   background-size: 15px 15px;
   font-size: 14px;

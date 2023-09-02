@@ -1,5 +1,5 @@
 <script setup>
-import emptyHousesIcon from '../assets/houses-search/empty_houses.png'
+import emptyHousesIcon from '../assets/images/img_empty_houses@3x.png'
 </script>
 
 <template>

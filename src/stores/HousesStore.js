@@ -5,6 +5,7 @@ export const useHouseStore = defineStore('HousesStore', {
     return {
       housesData: [],
       filteredData: [],
+      recommendedData: [],
       isSearched: false,
       sortedByPrice: true
     }
@@ -14,18 +15,31 @@ export const useHouseStore = defineStore('HousesStore', {
     countFilteredHouses: (state) => state.filteredData.length,
     filteredHouses(state) {
       return (searchKey) => {
-        this.filteredData = state.housesData.filter((house) => {
+        state.filteredData = state.housesData.filter((house) => {
           if (
             house.location.street.toLowerCase().includes(searchKey.toLowerCase()) ||
             house.location.houseNumber.toString() === searchKey ||
             house.price.toString() === searchKey ||
             house.location.zip.toLowerCase() === searchKey.toLowerCase() ||
             house.size.toString() === searchKey ||
+            house.size.toString() + ' m2' === searchKey ||
             house.location.city.toLowerCase().includes(searchKey.toLowerCase())
           ) {
             return house
           }
         })
+      }
+    },
+    recommendedHouses(state) {
+      return (houseId) => {
+        const houseDataById = state.housesData.find((house) => house.id === houseId)
+        state.recommendedData = state.housesData
+          .filter((house) => {
+            if (house.id !== houseId && house.location.city === houseDataById.location.city) {
+              return house
+            }
+          })
+          .sort((a, b) => a.id - b.id)
       }
     }
   },
@@ -47,12 +61,22 @@ export const useHouseStore = defineStore('HousesStore', {
       }
     },
     sortByPrice() {
-      this.housesData = this.housesData.sort((a, b) => a.price - b.price)
+      if (this.filteredData.length > 0) {
+        this.filteredData = this.filteredData.sort((a, b) => a.price - b.price)
+      } else {
+        this.housesData = this.housesData.sort((a, b) => a.price - b.price)
+      }
+
       this.sortedByPrice = true
     },
 
     sortBySize() {
-      this.housesData = this.housesData.sort((a, b) => a.size - b.size)
+      if (this.filteredData.length > 0) {
+        this.filteredData = this.filteredData.sort((a, b) => a.size - b.size)
+      } else {
+        this.housesData = this.housesData.sort((a, b) => a.size - b.size)
+      }
+
       this.sortedByPrice = false
     }
   }
