@@ -11,13 +11,16 @@ import bedIcon from '../assets/icons/ic_bed@3x.png'
 import bathIcon from '../assets/icons/ic_bath@3x.png'
 import garageIcon from '../assets/icons/ic_garage@3x.png'
 
+import HouseCard from '../components/HouseCard.vue'
 import BackToOverview from '../components/BackToOverview.vue'
 
 import { useRoute } from 'vue-router'
+import { useHouseStore } from '../stores/HousesStore'
 import { ref, watch } from 'vue'
 import { useMobileStore } from '../stores/MobileStore'
 
 const route = useRoute()
+const houseStore = useHouseStore()
 const houseDetails = ref([])
 
 const mobileStore = useMobileStore()
@@ -34,6 +37,7 @@ function fetchHouseDetails(id) {
     .then((response) => response.json())
     .then((data) => (houseDetails.value = data))
     .catch((error) => console.log('Error occurred:', error))
+    .finally(houseStore.recommendedHouses(Number(id)))
 }
 
 fetchHouseDetails(route.params.id)
@@ -103,6 +107,12 @@ watch(
 
             <div class="house-description">{{ house.description }}</div>
           </div>
+        </div>
+      </div>
+      <div class="recommended-houses" v-if="houseStore.recommendedData.length > 0">
+        <h2>Recommended for you</h2>
+        <div v-for="house in houseStore.recommendedData" :key="house.id" class="recommended-card">
+          <HouseCard :house="house" />
         </div>
       </div>
     </div>
@@ -198,6 +208,17 @@ watch(
   padding: 20px 0;
 }
 
+.recommended-houses h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.recommended-card a {
+  text-decoration: none;
+}
+
 @media only screen and (max-width: 375px) {
   .container-house-details {
     flex-direction: column;
@@ -235,6 +256,15 @@ watch(
 
   .house-description {
     padding: 20px 0 0;
+  }
+
+  .recommended-houses {
+    width: 340px;
+    margin: 0 auto;
+  }
+
+  .recommended-houses h2 {
+    margin: 20px 0 15px;
   }
 }
 </style>
