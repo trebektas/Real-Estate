@@ -23,8 +23,8 @@ function submitSearch() {
 </script>
 
 <template>
-  <form class="search-form" @submit.prevent="submitSearch">
-    <input type="text" placeholder="Search for a house" v-model="searchQuery" />
+  <form class="search-form" @submit.prevent="submitSearch" autocomplete="off">
+    <input name="searchBar" type="text" placeholder="Search for a house" v-model="searchQuery" />
     <img class="clear-icon" v-if="searchQuery" :src="clearIcon" @click="clearInput" />
   </form>
 </template>

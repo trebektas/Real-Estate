@@ -5,6 +5,7 @@ export const useHouseStore = defineStore('HousesStore', {
     return {
       housesData: [],
       filteredData: [],
+      recommendedData: [],
       isSearched: false,
       sortedByPrice: true
     }
@@ -27,6 +28,18 @@ export const useHouseStore = defineStore('HousesStore', {
             return house
           }
         })
+      }
+    },
+    recommendedHouses(state) {
+      return (houseId) => {
+        const houseDataById = state.housesData.find((house) => house.id === houseId)
+        state.recommendedData = state.housesData
+          .filter((house) => {
+            if (house.id !== houseId && house.location.city === houseDataById.location.city) {
+              return house
+            }
+          })
+          .sort((a, b) => a.id - b.id)
       }
     }
   },
