@@ -10,7 +10,6 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "dotenv": "^16.3.1",
     "pinia": "^2.1.4",
     "vee-validate": "^4.11.3",
     "vue": "^3.3.4",

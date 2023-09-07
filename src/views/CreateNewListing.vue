@@ -7,7 +7,6 @@ import { Field, Form, ErrorMessage } from 'vee-validate'
 import * as Yup from 'yup'
 import { useRouter } from 'vue-router'
 
-const MAX_FILE_SIZE = 7340032
 const router = useRouter()
 
 const validationSchema = Yup.object({
@@ -25,7 +24,7 @@ const validationSchema = Yup.object({
     .test(
       'is-valid-size',
       'Max allowed size is 7MB',
-      (value) => value && value.size <= MAX_FILE_SIZE
+      (value) => value && value.size <= import.meta.env.VITE_MAX_FILE_SIZE
     ),
   price: Yup.number()
     .required('Required field missing.')
@@ -60,9 +59,6 @@ const validationSchema = Yup.object({
 })
 
 function onSubmit(values) {
-  //delete THIS!!!!!!!!!
-  console.log('submitted')
-
   const formData = new FormData()
   const {
     price,
@@ -96,12 +92,12 @@ function onSubmit(values) {
   const postConfig = {
     method: 'POST',
     headers: {
-      'X-Api-Key': 'xD7bh1ZoA3mRlwrv8dYaNgXGLuKe_4JP'
+      'X-Api-Key': import.meta.env.VITE_API_KEY
     },
     body: formData
   }
 
-  fetch(`https://api.intern.d-tt.nl/api/houses`, postConfig)
+  fetch(import.meta.env.VITE_API_URL, postConfig)
     .then((response) => response.json())
     .then((data) => {
       if (data) {
@@ -111,19 +107,13 @@ function onSubmit(values) {
         const uploadImageConfig = {
           method: 'POST',
           headers: {
-            'X-Api-Key': 'xD7bh1ZoA3mRlwrv8dYaNgXGLuKe_4JP'
+            'X-Api-Key': import.meta.env.VITE_API_KEY
           },
           body: formUploadData
         }
 
-        //delete THIS!!!!!!!!!
-        console.log('posted house data')
-        console.log(data)
-        fetch(`https://api.intern.d-tt.nl/api/houses/${data.id}/upload`, uploadImageConfig)
+        fetch(`${import.meta.env.VITE_API_URL}/${data.id}/upload`, uploadImageConfig)
           .then((response) => {
-            //delete THIS!!!!!!!!!
-            console.log('uploaded picture')
-            console.log(response)
             if (response.ok) {
               router.push({ name: 'houseId', params: { id: data.id } })
             }
@@ -134,16 +124,20 @@ function onSubmit(values) {
     .catch((error) => console.log('Error occurred:', error))
 }
 
+//DONT FORGET TO DELETE!!!!!!!!!!!!!!!
 function invalidSubmit() {
-  console.log('invalidSubmit')
+  console.log('Invalid Submit')
 }
 </script>
 
 <template>
   <div class="container-new-listing-main">
     <div class="wrapper-new-listing">
-      <BackToOverview />
-      <h1>Create new listing</h1>
+      <div class="header-new-listing">
+        <BackToOverview />
+        <h1>Create new listing</h1>
+      </div>
+
       <div class="container-form">
         <Form
           @submit="onSubmit"
@@ -299,6 +293,8 @@ function invalidSubmit() {
 
 .wrapper-new-listing h1 {
   font-family: 'Montserrat', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
 }
 
 .container-form {
@@ -399,31 +395,6 @@ select option[value=''] {
   appearance: textfield;
 }
 
-.container-uploaded-image {
-  position: relative;
-  margin-top: 20px;
-}
-
-.uploaded-image {
-  width: 200px;
-  border-radius: 8px;
-}
-
-.upload-picture {
-  width: 120px;
-  height: 120px;
-  border: 2px var(--element-tertiary-2) dashed;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 7px;
-}
-
-.upload-picture img {
-  width: 30px;
-}
-
 .select-input {
   padding: 15px 20px;
   margin-top: 8px;
@@ -472,5 +443,61 @@ select option[value=''] {
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
+}
+
+@media only screen and (max-width: 375px) {
+  .container-new-listing-main {
+    margin-bottom: 10vh;
+    background-position: 15% 0%;
+  }
+  .wrapper-new-listing {
+    width: 320px;
+  }
+
+  .wrapper-new-listing h1 {
+    font-size: 18px;
+  }
+
+  .header-new-listing {
+    height: 6vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0 0;
+    position: relative;
+  }
+
+  .container-form {
+    width: 320px;
+  }
+
+  .double-input {
+    width: 150px;
+  }
+
+  .container-input label {
+    font-size: 12px;
+  }
+
+  .container-input input {
+    font-size: 12px;
+  }
+
+  .select-input {
+    font-size: 12px;
+  }
+
+  .container-input span {
+    font-size: 12px;
+  }
+
+  .input-description {
+    font-size: 12px;
+  }
+
+  .post-button {
+    width: 320px;
+    font-size: 12px;
+  }
 }
 </style>

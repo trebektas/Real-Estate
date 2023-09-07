@@ -37,10 +37,10 @@ export const useHouseStore = defineStore('HousesStore', {
         const config = {
           headers: {
             'Content-Type': 'application/json',
-            'X-Api-Key': 'xD7bh1ZoA3mRlwrv8dYaNgXGLuKe_4JP'
+            'X-Api-Key': import.meta.env.VITE_API_KEY
           }
         }
-        const response = await fetch('https://api.intern.d-tt.nl/api/houses', config)
+        const response = await fetch(import.meta.env.VITE_API_URL, config)
         const data = await response.json()
         this.housesData = data.sort((a, b) => a.price - b.price)
       } catch (error) {
