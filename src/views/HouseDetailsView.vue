@@ -25,12 +25,12 @@ const mobileStore = useMobileStore()
 const config = {
   headers: {
     'Content-Type': 'application/json',
-    'X-Api-Key': 'xD7bh1ZoA3mRlwrv8dYaNgXGLuKe_4JP'
+    'X-Api-Key': import.meta.env.VITE_API_KEY
   }
 }
 
 function fetchHouseDetails(id) {
-  fetch(`https://api.intern.d-tt.nl/api/houses/${id}`, config)
+  fetch(`${import.meta.env.VITE_API_URL}/${id}`, config)
     .then((response) => response.json())
     .then((data) => (houseDetails.value = data))
     .catch((error) => console.log('Error occurred:', error))

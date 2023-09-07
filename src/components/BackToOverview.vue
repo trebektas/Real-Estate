@@ -2,16 +2,29 @@
 import backIcon from '../assets/icons/ic_back_grey@3x.png'
 import backWhiteIcon from '../assets/icons/ic_back_white@3x.png'
 
+import { useRouter } from 'vue-router'
 import { useMobileStore } from '../stores/MobileStore'
 const mobileStore = useMobileStore()
+const router = useRouter()
+
+const currentPathObject = router.currentRoute.value.name
 </script>
 
 <template>
-  <div class="back-to-overview">
-    <span @click="$router.push({ name: 'home' })" class="back-icon"
-      ><img :src="mobileStore.mobileView ? backWhiteIcon : backIcon"
+  <div
+    :class="
+      mobileStore.mobileView && currentPathObject === 'houseDetails'
+        ? 'back-to-overview-mobile'
+        : 'back-to-overview'
+    "
+  >
+    <span @click="$router.back()" class="back-icon"
+      ><img
+        :src="
+          mobileStore.mobileView && currentPathObject === 'houseDetails' ? backWhiteIcon : backIcon
+        "
     /></span>
-    <span class="backButtonText">Back to overview</span>
+    <span v-if="!mobileStore.mobileView" class="backButtonText">Back to overview</span>
   </div>
 </template>
 
@@ -36,11 +49,17 @@ const mobileStore = useMobileStore()
 }
 
 @media only screen and (max-width: 375px) {
-  .back-to-overview {
+  .back-to-overview-mobile {
     position: absolute;
     margin: 30px 0 0 20px;
     padding: 0;
   }
+
+  .back-to-overview {
+    position: absolute;
+    left: 0;
+  }
+
   .backButtonText {
     display: none;
   }

@@ -73,8 +73,9 @@ houseStore.fetchHouses()
     width: 340px;
   }
 
-  .overview-search-sort {
+  .overview-header {
     flex-direction: column;
+    position: relative;
   }
 }
 </style>
