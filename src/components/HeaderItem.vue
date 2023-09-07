@@ -17,7 +17,7 @@ function setAboutActive() {
 <template>
   <header>
     <div class="wrapper">
-      <img :src="Logo" alt="Company Logo" />
+      <img :src="Logo" alt="DTT Logo" />
       <nav class="navigation">
         <RouterLink to="/" @click="setHomeActive" :class="isHousesActive ? 'header-active' : null"
           >Houses</RouterLink

@@ -13,11 +13,12 @@ import garageIcon from '../assets/icons/ic_garage@3x.png'
 
 import BackToOverview from '../components/BackToOverview.vue'
 
-import { useRoute } from 'vue-router'
-import { ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ref } from 'vue'
 import { useMobileStore } from '../stores/MobileStore'
 
 const route = useRoute()
+const router = useRouter()
 const houseDetails = ref([])
 
 const mobileStore = useMobileStore()
@@ -42,13 +43,9 @@ function formatPrice(price) {
   return new Intl.NumberFormat('en-DE').format(price)
 }
 
-watch(
-  () => route.params.id,
-
-  () => {
-    fetchHouseDetails(route.params.id)
-  }
-)
+const onEditClick = () => {
+  router.push({ name: 'houseEdit', params: { id: route.params.id } })
+}
 </script>
 
 <template>
@@ -59,7 +56,8 @@ watch(
         <div v-for="house in houseDetails" :key="house.id" class="house-details-wrapper">
           <!--Edit/Delete Tab Conditions >> house.madeByMe && mobileStore.mobileView-->
           <div v-if="house.madeByMe && mobileStore.mobileView" class="edit-delete-mobile-tab">
-            <span class="edit-delete-span"><img :src="editWhiteIcon" alt="Edit Icon" /></span
+            <span class="edit-delete-span" @click="onEditClick"
+              ><img :src="editWhiteIcon" alt="Edit Icon" /></span
             ><span class="edit-delete-span"><img :src="deleteWhiteIcon" alt="Delete Icon" /></span>
           </div>
           <div class="house-details-image"><img :src="house.image" :alt="house.id" /></div>
@@ -71,7 +69,8 @@ watch(
               </div>
               <!--Edit/Delete Tab Conditions >> house.madeByMe && !mobileStore.mobileView-->
               <div v-if="house.madeByMe && !mobileStore.mobileView" class="edit-delete-tab">
-                <span class="edit-delete-span"><img :src="editIcon" alt="Edit Icon" /></span
+                <span class="edit-delete-span" @click="onEditClick"
+                  ><img :src="editIcon" alt="Edit Icon" /></span
                 ><span class="edit-delete-span"><img :src="deleteIcon" alt="Delete Icon" /></span>
               </div>
             </div>
