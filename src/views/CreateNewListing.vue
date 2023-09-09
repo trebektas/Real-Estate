@@ -9,6 +9,9 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
+const myHeaders = new Headers()
+myHeaders.append('X-Api-Key', import.meta.env.VITE_API_KEY)
+
 const validationSchema = Yup.object({
   streetName: Yup.string().required('Required field missing.').trim(),
   houseNumber: Yup.number()
@@ -89,15 +92,14 @@ function onSubmit(values) {
   formData.append('hasGarage', hasGarage)
   formData.append('description', description)
 
-  const postConfig = {
+  const requestOptions = {
     method: 'POST',
-    headers: {
-      'X-Api-Key': import.meta.env.VITE_API_KEY
-    },
-    body: formData
+    headers: myHeaders,
+    body: formData,
+    redirect: 'follow'
   }
 
-  fetch(import.meta.env.VITE_API_URL, postConfig)
+  fetch(import.meta.env.VITE_API_URL, requestOptions)
     .then((response) => response.json())
     .then((data) => {
       if (data) {
@@ -106,16 +108,17 @@ function onSubmit(values) {
 
         const uploadImageConfig = {
           method: 'POST',
-          headers: {
-            'X-Api-Key': import.meta.env.VITE_API_KEY
-          },
-          body: formUploadData
+          headers: myHeaders,
+          body: formUploadData,
+          redirect: 'follow'
         }
 
         fetch(`${import.meta.env.VITE_API_URL}/${data.id}/upload`, uploadImageConfig)
           .then((response) => {
             if (response.ok) {
-              router.push({ name: 'houseId', params: { id: data.id } })
+              setTimeout(() => {
+                router.push({ name: 'houseDetails', params: { id: data.id } })
+              }, 1000)
             }
           })
           .catch((error) => console.log('Error occurred:', error))
@@ -143,6 +146,7 @@ function invalidSubmit() {
           @submit="onSubmit"
           @invalid-submit="invalidSubmit"
           :validation-schema="validationSchema"
+          v-slot="{ meta }"
         >
           <!--STREET NAME INPUT-->
           <div class="container-input">
@@ -270,7 +274,13 @@ function invalidSubmit() {
           </div>
 
           <div class="container-button">
-            <button type="submit" class="post-button">POST</button>
+            <button
+              type="submit"
+              class="post-button"
+              :class="!meta.valid ? 'post-button-disabled' : ''"
+            >
+              POST
+            </button>
           </div>
         </Form>
       </div>
@@ -443,6 +453,10 @@ select option[value=''] {
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
+}
+
+.post-button-disabled {
+  opacity: 0.5;
 }
 
 @media only screen and (max-width: 375px) {
