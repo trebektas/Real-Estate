@@ -41,6 +41,7 @@ header {
   background-color: var(--element-background-2);
   font-family: 'Montserrat', sans-serif;
   height: 100px;
+  z-index: 999;
 }
 .wrapper {
   display: flex;
