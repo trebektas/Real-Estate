@@ -18,7 +18,9 @@ const currentPathObject = router.currentRoute.value.name
         : 'back-to-overview'
     "
   >
-    <span @click="$router.back()" class="back-icon"
+    <span
+      @click="currentPathObject === 'houseDetails' ? $router.push({ path: '/' }) : $router.back()"
+      class="back-icon"
       ><img
         :src="
           mobileStore.mobileView && currentPathObject === 'houseDetails' ? backWhiteIcon : backIcon

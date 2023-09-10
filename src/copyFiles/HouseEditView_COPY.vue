@@ -1,16 +1,54 @@
 <script setup>
-import BackToOverview from '../components/BackToOverview.vue'
-// import uploadIcon from '../assets/icons/ic_upload@3x.png'
-// import clearWhiteIcon from '../assets/icons/ic_clear_white@3x.png'
-
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import * as Yup from 'yup'
-import { useRouter } from 'vue-router'
 
+import BackToOverview from '../components/BackToOverview.vue'
+import uploadIcon from '../assets/icons/ic_upload@3x.png'
+import clearWhiteIcon from '../assets/icons/ic_clear_white@3x.png'
+
+const route = useRoute()
 const router = useRouter()
+const formValues = ref({})
+const imageData = ref(null)
+const newPictureUrl = ref(null)
 
 const myHeaders = new Headers()
 myHeaders.append('X-Api-Key', import.meta.env.VITE_API_KEY)
+
+const requestHouseDetailsOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+}
+
+fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, requestHouseDetailsOptions)
+  .then((response) => response.json())
+  .then((data) => {
+    imageData.value = data[0].image
+
+    // Set initial values
+    formValues.value = {
+      streetName: data[0].location.street,
+      houseNumber: data[0].location.houseNumber,
+      numberAddition:
+        data[0].location.houseNumberAddition === 'undefined'
+          ? ''
+          : data[0].location.houseNumberAddition,
+      zip: data[0].location.zip,
+      city: data[0].location.city,
+      image: data[0].image,
+      price: data[0].price,
+      size: data[0].size,
+      hasGarage: data[0].hasGarage,
+      bedrooms: data[0].rooms.bedrooms,
+      bathrooms: data[0].rooms.bathrooms,
+      constructionYear: data[0].constructionYear,
+      description: data[0].description
+    }
+  })
+  .catch((error) => console.log('error', error))
 
 const validationSchema = Yup.object({
   streetName: Yup.string().required('Required field missing.').trim(),
@@ -22,13 +60,12 @@ const validationSchema = Yup.object({
   numberAddition: Yup.string().trim(),
   zip: Yup.string().required('Required field missing.').trim(),
   city: Yup.string().required('Required field missing.').trim(),
-  image: Yup.mixed()
-    .required('Required field missing.')
-    .test(
-      'is-valid-size',
-      'Max allowed size is 7MB',
-      (value) => value && value.size <= import.meta.env.VITE_MAX_FILE_SIZE
-    ),
+  image: Yup.mixed().required('Required field missing.'),
+  // .test('is-valid-size', 'Max allowed size is 7MB', (value) => {
+  //   console.log('value.size')
+  //   console.log(value)
+  //   value || value.size <= import.meta.env.VITE_MAX_FILE_SIZE
+  // }),
   price: Yup.number()
     .required('Required field missing.')
     .typeError('Required field must be a number.')
@@ -92,37 +129,35 @@ function onSubmit(values) {
   formData.append('hasGarage', hasGarage)
   formData.append('description', description)
 
-  const requestOptions = {
+  const requestHouseEditOptions = {
     method: 'POST',
     headers: myHeaders,
     body: formData,
     redirect: 'follow'
   }
 
-  fetch(import.meta.env.VITE_API_URL, requestOptions)
-    .then((response) => response.json())
-    .then((data) => {
-      if (data) {
-        const formUploadData = new FormData()
-        formUploadData.append('image', image)
+  //update house details
+  fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, requestHouseEditOptions)
+    .then(() => {
+      const formUploadData = new FormData()
+      formUploadData.append('image', imageData, imageData.value)
 
-        const uploadImageConfig = {
-          method: 'POST',
-          headers: myHeaders,
-          body: formUploadData,
-          redirect: 'follow'
-        }
-
-        fetch(`${import.meta.env.VITE_API_URL}/${data.id}/upload`, uploadImageConfig)
-          .then((response) => {
-            if (response.ok) {
-              setTimeout(() => {
-                router.push({ name: 'houseDetails', params: { id: data.id } })
-              }, 1000)
-            }
-          })
-          .catch((error) => console.log('Error occurred:', error))
+      const uploadImageOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formUploadData,
+        redirect: 'follow'
       }
+
+      fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}/upload`, uploadImageOptions)
+        .then((response) => {
+          if (response.ok) {
+            setTimeout(() => {
+              router.push({ name: 'houseDetails', params: { id: route.params.id } })
+            }, 1000)
+          }
+        })
+        .catch((error) => console.log('Error occurred:', error))
     })
     .catch((error) => console.log('Error occurred:', error))
 }
@@ -131,6 +166,16 @@ function onSubmit(values) {
 function invalidSubmit() {
   console.log('Invalid Submit')
 }
+
+function updateImageData(event) {
+  imageData.value = event.target.files[0]
+  newPictureUrl.value = URL.createObjectURL(imageData.value)
+}
+
+function clearUploadPicture() {
+  imageData.value = null
+  newPictureUrl.value = null
+}
 </script>
 
 <template>
@@ -138,7 +183,7 @@ function invalidSubmit() {
     <div class="wrapper-new-listing">
       <div class="header-new-listing">
         <BackToOverview />
-        <h1>Create new listing</h1>
+        <h1>Edit listing</h1>
       </div>
 
       <div class="container-form">
@@ -146,6 +191,7 @@ function invalidSubmit() {
           @submit="onSubmit"
           @invalid-submit="invalidSubmit"
           :validation-schema="validationSchema"
+          :initial-values="formValues"
           v-slot="{ meta }"
         >
           <!--STREET NAME INPUT-->
@@ -195,8 +241,32 @@ function invalidSubmit() {
 
           <!--UPLOAD PICTURE INPUT-->
           <div class="container-input">
-            <label for="image">Upload picture (PNG or JPG)*</label>
-            <Field id="image" type="file" name="image" accept=".png,.jpg" />
+            <label v-if="!imageData" for="image">Upload picture (PNG or JPG)*</label>
+            <!-- <Field id="image" type="file" name="image" accept=".png,.jpg" /> -->
+            <Field id="image" name="image" type="file" v-slot="{ uploadField }"
+              ><input
+                v-bind="uploadField"
+                id="image"
+                style="display: none"
+                name="image"
+                type="file"
+                accept=".png,.jpg"
+                @change="updateImageData"
+                ref="fileInput" />
+              <button v-if="!imageData" @click="$refs.fileInput.click()" class="upload-button">
+                <img :src="uploadIcon" />
+              </button>
+              <div v-if="imageData" class="container-uploaded-picture">
+                <img
+                  :src="imageData && !newPictureUrl ? imageData : newPictureUrl"
+                  class="uploaded-picture"
+                />
+                <img
+                  :src="clearWhiteIcon"
+                  class="clear-picture-icon"
+                  @click="clearUploadPicture"
+                /></div
+            ></Field>
             <ErrorMessage name="image" class="upload-error-message" />
           </div>
 
@@ -276,10 +346,10 @@ function invalidSubmit() {
           <div class="container-button">
             <button
               type="submit"
-              class="post-button"
-              :class="!meta.valid ? 'post-button-disabled' : ''"
+              class="save-button"
+              :class="!meta.dirty || !meta.valid ? 'save-button-disabled' : ''"
             >
-              POST
+              SAVE
             </button>
           </div>
         </Form>
@@ -442,7 +512,7 @@ select option[value=''] {
   padding: 20px 0 30px;
 }
 
-.post-button {
+.save-button {
   width: 200px;
   padding: 15px 20px;
   border: none;
@@ -455,8 +525,42 @@ select option[value=''] {
   cursor: pointer;
 }
 
-.post-button-disabled {
+.save-button-disabled {
   opacity: 0.5;
+}
+
+.upload-button {
+  margin-top: 10px;
+  width: 150px;
+  height: 150px;
+  background-color: transparent;
+  border: 2px dashed var(--element-tertiary-2);
+}
+
+.upload-button img {
+  width: 35px;
+}
+
+.container-uploaded-picture {
+  margin-top: 20px;
+  position: relative;
+  display: flex;
+  width: 150px;
+}
+
+.uploaded-picture {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.clear-picture-icon {
+  position: absolute;
+  width: 40px;
+  right: 0;
+  top: 0;
+  transform: translate(13px, -10px);
 }
 
 @media only screen and (max-width: 375px) {
@@ -509,7 +613,7 @@ select option[value=''] {
     font-size: 12px;
   }
 
-  .post-button {
+  .save-button {
     width: 320px;
     font-size: 12px;
   }
