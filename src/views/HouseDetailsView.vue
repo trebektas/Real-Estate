@@ -12,6 +12,7 @@ import bathIcon from '../assets/icons/ic_bath@3x.png'
 import garageIcon from '../assets/icons/ic_garage@3x.png'
 
 import BackToOverview from '../components/BackToOverview.vue'
+import DeleteListing from '../components/DeleteListing.vue'
 
 import { useRoute, useRouter } from 'vue-router'
 import { ref } from 'vue'
@@ -20,6 +21,7 @@ import { useMobileStore } from '../stores/MobileStore'
 const route = useRoute()
 const router = useRouter()
 const houseDetails = ref([])
+const isDeleteFormOpen = ref(false)
 
 const mobileStore = useMobileStore()
 
@@ -46,9 +48,18 @@ function formatPrice(price) {
 const onEditClick = () => {
   router.push({ name: 'houseEdit', params: { id: route.params.id } })
 }
+
+const openDeletePopUp = () => {
+  isDeleteFormOpen.value = true
+}
+
+const closeDeletePopUp = () => {
+  isDeleteFormOpen.value = false
+}
 </script>
 
 <template>
+  <DeleteListing v-if="isDeleteFormOpen" @close-pop-up="closeDeletePopUp" />
   <div class="container-house-details-main">
     <BackToOverview />
     <div class="container-house-details">
@@ -58,7 +69,9 @@ const onEditClick = () => {
           <div v-if="house.madeByMe && mobileStore.mobileView" class="edit-delete-mobile-tab">
             <span class="edit-delete-span" @click="onEditClick"
               ><img :src="editWhiteIcon" alt="Edit Icon" /></span
-            ><span class="edit-delete-span"><img :src="deleteWhiteIcon" alt="Delete Icon" /></span>
+            ><span class="edit-delete-span"
+              ><img :src="deleteWhiteIcon" alt="Delete Icon" @click="openDeletePopUp"
+            /></span>
           </div>
           <div class="house-details-image"><img :src="house.image" :alt="house.id" /></div>
           <div class="house-details-section">
@@ -71,7 +84,9 @@ const onEditClick = () => {
               <div v-if="house.madeByMe && !mobileStore.mobileView" class="edit-delete-tab">
                 <span class="edit-delete-span" @click="onEditClick"
                   ><img :src="editIcon" alt="Edit Icon" /></span
-                ><span class="edit-delete-span"><img :src="deleteIcon" alt="Delete Icon" /></span>
+                ><span class="edit-delete-span"
+                  ><img :src="deleteIcon" @click="openDeletePopUp" alt="Delete Icon"
+                /></span>
               </div>
             </div>
 
