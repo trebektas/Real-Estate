@@ -4,29 +4,32 @@ import Home from '../assets/icons/ic_mobile_navigarion_home@3x.png'
 import InfoActive from '../assets/icons/ic_mobile_navigarion_info_active@3x.png'
 import Info from '../assets/icons/ic_mobile_navigarion_info@3x.png'
 
-import { ref } from 'vue'
-const activeHomeIcon = ref(true)
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const aboutIsActive = ref(false)
+
+watch(
+  () => route.name,
+  () => {
+    if (route.name === 'about') {
+      aboutIsActive.value = true
+    } else aboutIsActive.value = false
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
   <nav class="navigation-mobile">
     <RouterLink to="/" class="router-home">
-      <img
-        @click="activeHomeIcon = true"
-        v-if="activeHomeIcon"
-        :src="HomeActive"
-        alt="Active Home Icon"
-      />
-      <img @click="activeHomeIcon = true" v-if="!activeHomeIcon" :src="Home" alt="Home Icon" />
+      <img v-if="!aboutIsActive" :src="HomeActive" alt="Active Home Icon" />
+      <img v-if="aboutIsActive" :src="Home" alt="Home Icon" />
     </RouterLink>
     <RouterLink to="/about">
-      <img
-        @click="activeHomeIcon = false"
-        v-if="!activeHomeIcon"
-        :src="InfoActive"
-        alt="Active Info Icon"
-      />
-      <img @click="activeHomeIcon = false" v-if="activeHomeIcon" :src="Info" alt="Info Icon" />
+      <img v-if="aboutIsActive" :src="InfoActive" alt="Active Info Icon" />
+      <img v-if="!aboutIsActive" :src="Info" alt="Info Icon" />
     </RouterLink>
   </nav>
 </template>
