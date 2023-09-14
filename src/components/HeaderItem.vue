@@ -1,17 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import Logo from '../assets/logo.png'
-import { ref } from 'vue'
-
-const isHousesActive = ref(true)
-
-function setHomeActive() {
-  isHousesActive.value = true
-}
-
-function setAboutActive() {
-  isHousesActive.value = false
-}
 </script>
 
 <template>
@@ -19,15 +8,8 @@ function setAboutActive() {
     <div class="wrapper">
       <img :src="Logo" alt="DTT Logo" />
       <nav class="navigation">
-        <RouterLink to="/" @click="setHomeActive" :class="isHousesActive ? 'header-active' : null"
-          >Houses</RouterLink
-        >
-        <RouterLink
-          to="/about"
-          @click="setAboutActive"
-          :class="isHousesActive ? null : 'header-active'"
-          >About</RouterLink
-        >
+        <RouterLink to="/">Houses</RouterLink>
+        <RouterLink to="/about">About</RouterLink>
       </nav>
     </div>
   </header>
@@ -54,16 +36,16 @@ header {
   width: 150px;
 }
 
+.navigation .router-link-active {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
 .navigation a {
   margin-left: 50px;
   font-size: 18px;
   text-decoration: none;
   color: var(--element-tertiary-2);
   font-weight: 500;
-}
-
-a.header-active {
-  color: var(--text-primary);
-  font-weight: 700;
 }
 </style>
