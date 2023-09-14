@@ -1,31 +1,34 @@
 <script setup>
 import clearIcon from '../assets/icons/ic_clear@3x.png'
-import { ref } from 'vue'
+
 import { useHouseStore } from '../stores/HousesStore'
 
-const searchQuery = ref(null)
 const houseStore = useHouseStore()
 
 function clearInput() {
-  searchQuery.value = null
+  houseStore.searchQuery = null
   houseStore.filteredData = []
   houseStore.isSearched = false
 }
 
 function submitSearch() {
-  if (searchQuery.value) {
-    houseStore.filteredHouses(searchQuery.value.trim())
+  if (houseStore.searchQuery) {
+    houseStore.filteredHouses
     houseStore.isSearched = true
-  } else {
-    clearInput()
-  }
+  } else clearInput()
 }
 </script>
 
 <template>
   <form class="search-form" @submit.prevent="submitSearch" autocomplete="off">
-    <input name="searchBar" type="text" placeholder="Search for a house" v-model="searchQuery" />
-    <img class="clear-icon" v-if="searchQuery" :src="clearIcon" @click="clearInput" />
+    <input
+      name="searchBar"
+      type="text"
+      placeholder="Search for a house"
+      v-model.trim="houseStore.searchQuery"
+    />
+
+    <img class="clear-icon" v-if="houseStore.searchQuery" :src="clearIcon" @click="clearInput" />
   </form>
 </template>
 

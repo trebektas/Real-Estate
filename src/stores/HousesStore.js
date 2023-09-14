@@ -6,6 +6,7 @@ export const useHouseStore = defineStore('HousesStore', {
       housesData: [],
       filteredData: [],
       isSearched: false,
+      searchQuery: null,
       sortedByPrice: true
     }
   },
@@ -13,21 +14,19 @@ export const useHouseStore = defineStore('HousesStore', {
   getters: {
     countFilteredHouses: (state) => state.filteredData.length,
     filteredHouses(state) {
-      return (searchKey) => {
-        state.filteredData = state.housesData.filter((house) => {
-          if (
-            house.location.street.toLowerCase().includes(searchKey.toLowerCase()) ||
-            house.location.houseNumber.toString() === searchKey ||
-            house.price.toString() === searchKey ||
-            house.location.zip.toLowerCase() === searchKey.toLowerCase() ||
-            house.size.toString() === searchKey ||
-            house.size.toString() + ' m2' === searchKey ||
-            house.location.city.toLowerCase().includes(searchKey.toLowerCase())
-          ) {
-            return house
-          }
-        })
-      }
+      state.filteredData = state.housesData.filter((house) => {
+        if (
+          house.location.street.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
+          house.location.houseNumber.toString() === state.searchQuery ||
+          house.price.toString() === state.searchQuery ||
+          house.location.zip.toLowerCase() === state.searchQuery.toLowerCase() ||
+          house.size.toString() === state.searchQuery ||
+          house.size.toString() + ' m2' === state.searchQuery ||
+          house.location.city.toLowerCase().includes(state.searchQuery.toLowerCase())
+        ) {
+          return house
+        }
+      })
     }
   },
 
