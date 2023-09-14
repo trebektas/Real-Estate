@@ -11,7 +11,8 @@ import clearWhiteIcon from '../assets/icons/ic_clear_white@3x.png'
 const route = useRoute()
 const router = useRouter()
 const formValues = ref({})
-const imageData = ref(null)
+const currentImageData = ref(null)
+const newImageData = ref(null)
 const newPictureUrl = ref(null)
 
 const myHeaders = new Headers()
@@ -26,7 +27,7 @@ const requestHouseDetailsOptions = {
 fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, requestHouseDetailsOptions)
   .then((response) => response.json())
   .then((data) => {
-    imageData.value = data[0].image
+    currentImageData.value = data[0].image
 
     // Set initial values
     formValues.value = {
@@ -60,12 +61,13 @@ const validationSchema = Yup.object({
   numberAddition: Yup.string().trim(),
   zip: Yup.string().required('Required field missing.').trim(),
   city: Yup.string().required('Required field missing.').trim(),
-  image: Yup.mixed().required('Required field missing.'),
-  // .test('is-valid-size', 'Max allowed size is 7MB', (value) => {
-  //   console.log('value.size')
-  //   console.log(value)
-  //   value || value.size <= import.meta.env.VITE_MAX_FILE_SIZE
-  // }),
+  image: Yup.mixed()
+    .required('Required field missing.')
+    .test('is-valid-size', 'Max allowed size is 7MB', (value) => {
+      if (newImageData.value !== null) {
+        return value && value.size <= Number(import.meta.env.VITE_MAX_FILE_SIZE)
+      } else return true
+    }),
   price: Yup.number()
     .required('Required field missing.')
     .typeError('Required field must be a number.')
@@ -112,7 +114,8 @@ function onSubmit(values) {
     city,
     constructionYear,
     hasGarage,
-    description
+    description,
+    image
   } = values
 
   formData.append('price', price)
@@ -138,41 +141,43 @@ function onSubmit(values) {
   //update house details
   fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, requestHouseEditOptions)
     .then(() => {
-      const formUploadData = new FormData()
-      formUploadData.append('image', imageData.value, imageData.value.name)
+      //upload new house image
+      if (newImageData.value !== null) {
+        const formUploadData = new FormData()
+        formUploadData.append('image', image, image.name)
 
-      const uploadImageOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: formUploadData,
-        redirect: 'follow'
+        const uploadImageOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: formUploadData,
+          redirect: 'follow'
+        }
+
+        //fetch new house image
+        fetch(
+          `${import.meta.env.VITE_API_URL}/${route.params.id}/upload`,
+          uploadImageOptions
+        ).catch((error) => console.log('Error occurred:', error))
       }
-
-      fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}/upload`, uploadImageOptions)
-        .then((response) => {
-          if (response.ok) {
-            setTimeout(() => {
-              router.push({ name: 'houseDetails', params: { id: route.params.id } })
-            }, 1000)
-          }
-        })
-        .catch((error) => console.log('Error occurred:', error))
+    })
+    .then(() => {
+      setTimeout(() => {
+        router.push({ name: 'houseDetails', params: { id: route.params.id } })
+      }, 3000)
     })
     .catch((error) => console.log('Error occurred:', error))
 }
 
-//DONT FORGET TO DELETE!!!!!!!!!!!!!!!
-function invalidSubmit() {
-  console.log('Invalid Submit')
-}
-
 function updateImageData(event) {
-  imageData.value = event.target.files[0]
-  newPictureUrl.value = URL.createObjectURL(imageData.value)
+  if (event.target.files[0]) {
+    newImageData.value = event.target.files[0]
+    newPictureUrl.value = URL.createObjectURL(newImageData.value)
+  }
 }
 
 function clearUploadPicture() {
-  imageData.value = null
+  currentImageData.value = null
+  newImageData.value = null
   newPictureUrl.value = null
 }
 </script>
@@ -191,7 +196,8 @@ function clearUploadPicture() {
           @invalid-submit="invalidSubmit"
           :validation-schema="validationSchema"
           :initial-values="formValues"
-          v-slot="{ meta }"
+          ref="editForm"
+          v-slot="{ meta, setFieldValue }"
         >
           <!--STREET NAME INPUT-->
           <div class="container-input">
@@ -240,9 +246,9 @@ function clearUploadPicture() {
 
           <!--UPLOAD PICTURE INPUT-->
           <div class="container-input">
-            <label v-if="!imageData" for="image">Upload picture (PNG or JPG)*</label>
+            <label for="image">Upload picture (PNG or JPG)*</label>
             <!-- <Field id="image" type="file" name="image" accept=".png,.jpg" /> -->
-            <Field id="image" name="image" type="file"
+            <Field id="image" name="image" type="file" v-slot="{ field }"
               ><input
                 id="image"
                 style="display: none"
@@ -250,24 +256,25 @@ function clearUploadPicture() {
                 type="file"
                 accept=".png,.jpg"
                 @change="updateImageData"
-                ref="fileImageInput" />
+                ref="fileImageInput"
+                v-bind="field" />
               <button
-                v-if="!imageData"
+                v-if="!currentImageData && !newImageData"
                 type="button"
                 @click="$refs.fileImageInput.click()"
                 class="upload-button"
               >
                 <img :src="uploadIcon" />
               </button>
-              <div v-if="imageData" class="container-uploaded-picture">
+              <div v-if="currentImageData || newImageData" class="container-uploaded-picture">
                 <img
-                  :src="imageData && !newPictureUrl ? imageData : newPictureUrl"
+                  :src="currentImageData && !newPictureUrl ? currentImageData : newPictureUrl"
                   class="uploaded-picture"
                 />
                 <img
                   :src="clearWhiteIcon"
                   class="clear-picture-icon"
-                  @click="clearUploadPicture"
+                  @click="clearUploadPicture(), setFieldValue('image', null)"
                 /></div
             ></Field>
             <ErrorMessage name="image" class="upload-error-message" />
@@ -351,6 +358,7 @@ function clearUploadPicture() {
               type="submit"
               class="save-button"
               :class="!meta.dirty || !meta.valid ? 'save-button-disabled' : ''"
+              :disabled="!meta.dirty || !meta.valid"
             >
               SAVE
             </button>
