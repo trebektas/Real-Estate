@@ -1,13 +1,17 @@
 <script setup>
 import BackToOverview from '../components/BackToOverview.vue'
-// import uploadIcon from '../assets/icons/ic_upload@3x.png'
-// import clearWhiteIcon from '../assets/icons/ic_clear_white@3x.png'
+import uploadIcon from '../assets/icons/ic_upload@3x.png'
+import clearWhiteIcon from '../assets/icons/ic_clear_white@3x.png'
 
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import * as Yup from 'yup'
-import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
+const newImageData = ref(null)
+const newPictureUrl = ref(null)
 
 const myHeaders = new Headers()
 myHeaders.append('X-Api-Key', import.meta.env.VITE_API_KEY)
@@ -104,7 +108,7 @@ function onSubmit(values) {
     .then((data) => {
       if (data) {
         const formUploadData = new FormData()
-        formUploadData.append('image', image)
+        formUploadData.append('image', image, image.name)
 
         const uploadImageConfig = {
           method: 'POST',
@@ -127,9 +131,16 @@ function onSubmit(values) {
     .catch((error) => console.log('Error occurred:', error))
 }
 
-//DONT FORGET TO DELETE!!!!!!!!!!!!!!!
-function invalidSubmit() {
-  console.log('Invalid Submit')
+function updateImageData(event) {
+  if (event.target.files[0]) {
+    newImageData.value = event.target.files[0]
+    newPictureUrl.value = URL.createObjectURL(newImageData.value)
+  }
+}
+
+function clearUploadPicture() {
+  newImageData.value = null
+  newPictureUrl.value = null
 }
 </script>
 
@@ -144,9 +155,8 @@ function invalidSubmit() {
       <div class="container-form">
         <Form
           @submit="onSubmit"
-          @invalid-submit="invalidSubmit"
           :validation-schema="validationSchema"
-          v-slot="{ meta }"
+          v-slot="{ meta, setFieldValue }"
         >
           <!--STREET NAME INPUT-->
           <div class="container-input">
@@ -193,10 +203,38 @@ function invalidSubmit() {
             <ErrorMessage name="city" />
           </div>
 
-          <!--UPLOAD PICTURE INPUT-->
           <div class="container-input">
             <label for="image">Upload picture (PNG or JPG)*</label>
-            <Field id="image" type="file" name="image" accept=".png,.jpg" />
+            <Field id="image" name="image" type="file" v-slot="{ field }">
+              <input
+                id="image"
+                style="display: none"
+                name="image"
+                type="file"
+                accept=".png,.jpg"
+                @change="updateImageData"
+                ref="fileImageInput"
+                v-bind="field"
+              />
+
+              <button
+                v-if="!newImageData"
+                type="button"
+                @click="$refs.fileImageInput.click()"
+                class="upload-button"
+              >
+                <img :src="uploadIcon" />
+              </button>
+
+              <div v-if="newImageData" class="container-uploaded-picture">
+                <img :src="newPictureUrl" class="uploaded-picture" />
+                <img
+                  :src="clearWhiteIcon"
+                  class="clear-picture-icon"
+                  @click="clearUploadPicture(), setFieldValue('image', null)"
+                />
+              </div>
+            </Field>
             <ErrorMessage name="image" class="upload-error-message" />
           </div>
 
@@ -457,6 +495,40 @@ select option[value=''] {
 
 .post-button-disabled {
   opacity: 0.5;
+}
+
+.upload-button {
+  margin-top: 10px;
+  width: 150px;
+  height: 150px;
+  background-color: transparent;
+  border: 2px dashed var(--element-tertiary-2);
+}
+
+.upload-button img {
+  width: 35px;
+}
+
+.container-uploaded-picture {
+  margin-top: 20px;
+  position: relative;
+  display: flex;
+  width: 150px;
+}
+
+.uploaded-picture {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.clear-picture-icon {
+  position: absolute;
+  width: 40px;
+  right: 0;
+  top: 0;
+  transform: translate(13px, -10px);
 }
 
 @media only screen and (max-width: 375px) {
