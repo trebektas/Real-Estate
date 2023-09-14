@@ -163,7 +163,7 @@ function onSubmit(values) {
     .then(() => {
       setTimeout(() => {
         router.push({ name: 'houseDetails', params: { id: route.params.id } })
-      }, 3000)
+      }, 1000)
     })
     .catch((error) => console.log('Error occurred:', error))
 }
