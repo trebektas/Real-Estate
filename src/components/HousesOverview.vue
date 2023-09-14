@@ -1,4 +1,5 @@
 <script setup>
+import { useHouseStore } from '../stores/HousesStore'
 import HouseCard from './HouseCard.vue'
 
 const props = defineProps({
@@ -8,6 +9,14 @@ const props = defineProps({
   },
   countFilteredHouses: Number
 })
+
+const houseStore = useHouseStore()
+
+if (houseStore.sortedByPrice) {
+  houseStore.sortByPrice()
+} else {
+  houseStore.sortBySize()
+}
 </script>
 
 <template>

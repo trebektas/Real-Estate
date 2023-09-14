@@ -41,7 +41,9 @@ export const useHouseStore = defineStore('HousesStore', {
         }
         const response = await fetch(import.meta.env.VITE_API_URL, config)
         const data = await response.json()
-        this.housesData = data.sort((a, b) => a.price - b.price)
+        this.housesData = this.sortedByPrice
+          ? data.sort((a, b) => a.price - b.price)
+          : data.sort((a, b) => a.size - b.size)
       } catch (error) {
         console.log('Error occurred:', error)
       }

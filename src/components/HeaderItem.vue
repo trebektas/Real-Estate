@@ -1,6 +1,21 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+import { ref, watch } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
+
 import Logo from '../assets/logo.png'
+
+const route = useRoute()
+const currentRouteIsAbout = ref(false)
+
+watch(
+  () => route.name,
+  () => {
+    route.name === 'about'
+      ? (currentRouteIsAbout.value = true)
+      : (currentRouteIsAbout.value = false)
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -8,8 +23,10 @@ import Logo from '../assets/logo.png'
     <div class="wrapper">
       <img :src="Logo" alt="DTT Logo" />
       <nav class="navigation">
-        <RouterLink to="/">Houses</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/" :class="currentRouteIsAbout ? '' : 'header-active'">Houses</RouterLink>
+        <RouterLink to="/about" :class="currentRouteIsAbout ? 'header-active' : ''"
+          >About</RouterLink
+        >
       </nav>
     </div>
   </header>
@@ -36,7 +53,8 @@ header {
   width: 150px;
 }
 
-.navigation .router-link-active {
+.navigation .router-link-active,
+.navigation .header-active {
   color: var(--text-primary);
   font-weight: 700;
 }

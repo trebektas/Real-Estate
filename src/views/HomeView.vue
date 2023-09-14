@@ -17,7 +17,10 @@ houseStore.fetchHouses()
         <h1 class="header-houses">Houses</h1>
         <CreateNewHouse />
       </div>
-      <div class="overview-header overview-search-sort"><SearchBar /><SortHouses /></div>
+      <div class="overview-header overview-search-sort">
+        <SearchBar />
+        <SortHouses />
+      </div>
     </section>
     <section
       class="section-overview-main"

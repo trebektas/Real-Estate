@@ -8,14 +8,14 @@ import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const aboutIsActive = ref(false)
+const currentRouteIsAbout = ref(false)
 
 watch(
   () => route.name,
   () => {
-    if (route.name === 'about') {
-      aboutIsActive.value = true
-    } else aboutIsActive.value = false
+    route.name === 'about'
+      ? (currentRouteIsAbout.value = true)
+      : (currentRouteIsAbout.value = false)
   },
   { immediate: true }
 )
@@ -24,12 +24,12 @@ watch(
 <template>
   <nav class="navigation-mobile">
     <RouterLink to="/" class="router-home">
-      <img v-if="!aboutIsActive" :src="HomeActive" alt="Active Home Icon" />
-      <img v-if="aboutIsActive" :src="Home" alt="Home Icon" />
+      <img v-if="!currentRouteIsAbout" :src="HomeActive" alt="Active Home Icon" />
+      <img v-if="currentRouteIsAbout" :src="Home" alt="Home Icon" />
     </RouterLink>
     <RouterLink to="/about">
-      <img v-if="aboutIsActive" :src="InfoActive" alt="Active Info Icon" />
-      <img v-if="!aboutIsActive" :src="Info" alt="Info Icon" />
+      <img v-if="currentRouteIsAbout" :src="InfoActive" alt="Active Info Icon" />
+      <img v-if="!currentRouteIsAbout" :src="Info" alt="Info Icon" />
     </RouterLink>
   </nav>
 </template>
