@@ -193,10 +193,8 @@ function clearUploadPicture() {
       <div class="container-form">
         <Form
           @submit="onSubmit"
-          @invalid-submit="invalidSubmit"
           :validation-schema="validationSchema"
           :initial-values="formValues"
-          ref="editForm"
           v-slot="{ meta, setFieldValue }"
         >
           <!--STREET NAME INPUT-->
@@ -248,8 +246,8 @@ function clearUploadPicture() {
           <div class="container-input">
             <label for="image">Upload picture (PNG or JPG)*</label>
             <!-- <Field id="image" type="file" name="image" accept=".png,.jpg" /> -->
-            <Field id="image" name="image" type="file" v-slot="{ field }"
-              ><input
+            <Field id="image" name="image" type="file" v-slot="{ field }">
+              <input
                 id="image"
                 style="display: none"
                 name="image"
@@ -257,7 +255,9 @@ function clearUploadPicture() {
                 accept=".png,.jpg"
                 @change="updateImageData"
                 ref="fileImageInput"
-                v-bind="field" />
+                v-bind="field"
+              />
+
               <button
                 v-if="!currentImageData && !newImageData"
                 type="button"
@@ -266,6 +266,7 @@ function clearUploadPicture() {
               >
                 <img :src="uploadIcon" />
               </button>
+
               <div v-if="currentImageData || newImageData" class="container-uploaded-picture">
                 <img
                   :src="currentImageData && !newPictureUrl ? currentImageData : newPictureUrl"
@@ -275,8 +276,9 @@ function clearUploadPicture() {
                   :src="clearWhiteIcon"
                   class="clear-picture-icon"
                   @click="clearUploadPicture(), setFieldValue('image', null)"
-                /></div
-            ></Field>
+                />
+              </div>
+            </Field>
             <ErrorMessage name="image" class="upload-error-message" />
           </div>
 
