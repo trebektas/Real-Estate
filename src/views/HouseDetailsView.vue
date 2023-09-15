@@ -149,6 +149,9 @@ const closeDeletePopUp = () => {
 
 .house-details-image img {
   width: 800px;
+  height: 550px;
+  object-fit: cover;
+  object-position: center;
 }
 
 .house-details-section {
@@ -212,6 +215,48 @@ const closeDeletePopUp = () => {
   padding: 20px 0;
 }
 
+@media only screen and (max-width: 1400px) {
+  .container-house-details-main {
+    width: 1000px;
+  }
+}
+
+@media only screen and (max-width: 1050px) {
+  .container-house-details-main {
+    width: 800px;
+  }
+}
+
+@media only screen and (max-width: 850px) {
+  .container-house-details-main {
+    width: 500px;
+  }
+
+  .house-details {
+    width: 500px;
+  }
+
+  .house-details-image img {
+    width: 500px;
+    height: 225px;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .container-house-details-main {
+    width: 350px;
+  }
+
+  .house-details {
+    width: 350px;
+  }
+
+  .house-details-image img {
+    width: 350px;
+    height: 200px;
+  }
+}
+
 @media only screen and (max-width: 375px) {
   .container-house-details {
     flex-direction: column;
@@ -226,6 +271,7 @@ const closeDeletePopUp = () => {
 
   .house-details-image img {
     width: 375px;
+    height: 200px;
   }
 
   .edit-delete-mobile-tab {

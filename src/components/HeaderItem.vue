@@ -66,4 +66,32 @@ header {
   color: var(--element-tertiary-2);
   font-weight: 500;
 }
+
+@media only screen and (max-width: 1400px) {
+  .wrapper {
+    width: 1000px;
+  }
+}
+
+@media only screen and (max-width: 1050px) {
+  .wrapper {
+    width: 800px;
+  }
+}
+
+@media only screen and (max-width: 850px) {
+  .wrapper {
+    width: 500px;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .wrapper {
+    width: 350px;
+  }
+
+  .wrapper img {
+    width: 100px;
+  }
+}
 </style>

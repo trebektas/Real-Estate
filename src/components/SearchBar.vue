@@ -66,6 +66,12 @@ input {
   cursor: pointer;
 }
 
+@media (min-width: 376px) and (max-width: 550px) {
+  input {
+    width: 300px;
+  }
+}
+
 @media only screen and (max-width: 375px) {
   input {
     width: 340px;

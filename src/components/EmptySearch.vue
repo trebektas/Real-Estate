@@ -29,6 +29,12 @@ import emptyHousesIcon from '../assets/images/img_empty_houses@3x.png'
   color: var(--text-secondary);
 }
 
+@media only screen and (max-width: 550px) {
+  .search-not-found {
+    width: 300px;
+  }
+}
+
 @media only screen and (max-width: 375px) {
   .search-not-found {
     width: 200px;

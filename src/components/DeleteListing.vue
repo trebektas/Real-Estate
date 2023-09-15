@@ -127,6 +127,18 @@ function onSubmit() {
   background-color: var(--element-secondary);
 }
 
+@media only screen and (max-width: 550px) {
+  .delete-popup-body {
+    width: 350px;
+    height: 250px;
+    padding: 20px;
+  }
+
+  .delete-submit-button {
+    margin-top: 20px;
+  }
+}
+
 @media only screen and (max-width: 375px) {
   .delete-popup-body {
     width: 340px;
