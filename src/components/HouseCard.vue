@@ -41,4 +41,91 @@ const props = defineProps({
   </RouterLink>
 </template>
 
-<style></style>
+<style>
+.container-house {
+  display: flex;
+  align-items: center;
+  margin: 0 auto 30px;
+  padding: 20px;
+  background-color: var(--element-background-2);
+
+  border-radius: 7px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.12);
+}
+
+.house-image img {
+  width: 130px;
+  height: 130px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.rooms-size span img {
+  width: 20px;
+}
+
+.container-information {
+  margin-left: 20px;
+  color: var(--text-secondary);
+  font-family: 'Open Sans', sans-serif;
+}
+
+.house-location {
+  color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+.house-location::first-letter {
+  text-transform: uppercase;
+}
+
+.price-text {
+  font-weight: 600;
+}
+
+.icons {
+  margin-right: 10px;
+  display: flex;
+}
+
+.rooms-size {
+  display: flex;
+  align-items: center;
+}
+
+.values {
+  margin-right: 20px;
+}
+
+.info {
+  margin-bottom: 13px;
+}
+
+@media (min-width: 376px) and (max-width: 550px) {
+  .house-image img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .info {
+    margin-bottom: 8px;
+  }
+}
+
+@media only screen and (max-width: 375px) {
+  .container-house {
+    margin: 0 auto 15px;
+    padding: 10px;
+  }
+
+  .house-image img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .info {
+    margin-bottom: 5px;
+  }
+}
+</style>

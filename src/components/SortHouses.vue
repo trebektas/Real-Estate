@@ -56,9 +56,33 @@ li.active-list {
   background-color: var(--element-primary);
 }
 
+@media (min-width: 551px) and (max-width: 850px) {
+  .container-sort-list {
+    margin-bottom: 15px;
+  }
+
+  .sort-list li {
+    width: 225px;
+  }
+}
+
+@media (min-width: 376px) and (max-width: 550px) {
+  .container-sort-list {
+    margin-bottom: 15px;
+  }
+
+  .sort-list li {
+    width: 150px;
+  }
+}
+
 @media only screen and (max-width: 375px) {
   .container-sort-list {
     margin-bottom: 15px;
+  }
+
+  .sort-list li {
+    width: 150px;
   }
 }
 </style>

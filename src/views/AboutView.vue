@@ -87,6 +87,35 @@ const mobileStore = useMobileStore()
   margin: 5px 0;
 }
 
+@media only screen and (max-width: 1400px) {
+  .container-about-section {
+    width: 1000px;
+  }
+}
+
+@media only screen and (max-width: 1050px) {
+  .container-about-section {
+    width: 800px;
+  }
+}
+
+@media only screen and (max-width: 850px) {
+  .container-about-section {
+    width: 500px;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .container-about-section {
+    width: 350px;
+    margin-top: 50px;
+  }
+
+  .container-logo img {
+    width: 200px;
+  }
+}
+
 @media only screen and (max-width: 375px) {
   .container-about-section {
     width: 320px;

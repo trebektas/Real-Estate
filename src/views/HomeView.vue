@@ -63,6 +63,57 @@ houseStore.fetchHouses()
   margin: 0 auto;
 }
 
+@media only screen and (max-width: 1400px) {
+  .section-overview-header {
+    width: 1000px;
+  }
+
+  .section-overview-main {
+    width: 1000px;
+  }
+}
+
+@media only screen and (max-width: 1050px) {
+  .section-overview-header {
+    width: 800px;
+  }
+
+  .section-overview-main {
+    width: 800px;
+  }
+}
+
+@media only screen and (max-width: 850px) {
+  .section-overview-header {
+    width: 500px;
+  }
+
+  .section-overview-main {
+    width: 500px;
+  }
+  .overview-search-sort {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 376px) and (max-width: 550px) {
+  .section-overview-header {
+    width: 350px;
+  }
+
+  .section-overview-main {
+    width: 350px;
+  }
+
+  .overview-header {
+    flex-direction: column;
+  }
+
+  .header-houses {
+    margin-bottom: 20px;
+  }
+}
+
 @media only screen and (max-width: 375px) {
   .header-houses {
     font-size: 18px;
