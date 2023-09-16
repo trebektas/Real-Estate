@@ -20,10 +20,11 @@ import { useMobileStore } from '../stores/MobileStore'
 
 const route = useRoute()
 const router = useRouter()
-const houseDetails = ref([])
-const isDeleteFormOpen = ref(false)
 
 const mobileStore = useMobileStore()
+
+const houseDetails = ref([])
+const isDeleteFormOpen = ref(false)
 
 const config = {
   headers: {
@@ -32,14 +33,11 @@ const config = {
   }
 }
 
-function fetchHouseDetails(id) {
-  fetch(`${import.meta.env.VITE_API_URL}/${id}`, config)
-    .then((response) => response.json())
-    .then((data) => (houseDetails.value = data))
-    .catch((error) => console.log('Error occurred:', error))
-}
-
-fetchHouseDetails(route.params.id)
+//get house details data
+fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, config)
+  .then((response) => response.json())
+  .then((data) => (houseDetails.value = data))
+  .catch((error) => console.log('Error occurred:', error))
 
 function formatPrice(price) {
   return new Intl.NumberFormat('en-DE').format(price)
@@ -64,8 +62,8 @@ const closeDeletePopUp = () => {
     <BackToOverview />
     <div class="container-house-details">
       <div v-if="houseDetails" class="house-details">
-        <div v-for="house in houseDetails" :key="house.id" class="house-details-wrapper">
-          <!--Edit/Delete Tab Conditions >> house.madeByMe && mobileStore.mobileView-->
+        <div v-for="house in houseDetails" :key="house.id">
+          <!--Edit/Delete tab conditions for mobile >> house.madeByMe && mobileStore.mobileView-->
           <div v-if="house.madeByMe && mobileStore.mobileView" class="edit-delete-mobile-tab">
             <span class="edit-delete-span" @click="onEditClick"
               ><img :src="editWhiteIcon" alt="Edit Icon" /></span
@@ -80,8 +78,8 @@ const closeDeletePopUp = () => {
                 {{ house.location.street }}
                 {{ house.location.houseNumber }}
               </div>
-              <!--Edit/Delete Tab Conditions >> house.madeByMe && !mobileStore.mobileView-->
-              <div v-if="house.madeByMe && !mobileStore.mobileView" class="edit-delete-tab">
+              <!--Edit/Delete tab conditions for desktop >> house.madeByMe && !mobileStore.mobileView-->
+              <div v-if="house.madeByMe && !mobileStore.mobileView">
                 <span class="edit-delete-span" @click="onEditClick"
                   ><img :src="editIcon" alt="Edit Icon" /></span
                 ><span class="edit-delete-span"

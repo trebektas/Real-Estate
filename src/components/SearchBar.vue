@@ -27,7 +27,6 @@ function submitSearch() {
       placeholder="Search for a house"
       v-model.trim="houseStore.searchQuery"
     />
-
     <img class="clear-icon" v-if="houseStore.searchQuery" :src="clearIcon" @click="clearInput" />
   </form>
 </template>
@@ -40,7 +39,7 @@ function submitSearch() {
   align-items: center;
 }
 
-input {
+.search-form input {
   width: 450px;
   padding: 10px 20px 10px 50px;
   background: var(--element-tertiary-1) url('../assets/icons/ic_search@3x.png') no-repeat 20px
@@ -67,13 +66,13 @@ input {
 }
 
 @media (min-width: 376px) and (max-width: 550px) {
-  input {
+  .search-form input {
     width: 300px;
   }
 }
 
 @media only screen and (max-width: 375px) {
-  input {
+  .search-form input {
     width: 340px;
   }
 }

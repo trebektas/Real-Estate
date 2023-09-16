@@ -4,7 +4,9 @@ import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
+
 const customForm = ref(null)
+
 const emit = defineEmits(['close-pop-up'])
 
 const handleClickOutside = (event) => {
@@ -22,10 +24,10 @@ onUnmounted(() => {
 })
 
 function onSubmit() {
-  var myHeaders = new Headers()
+  const myHeaders = new Headers()
   myHeaders.append('X-Api-Key', import.meta.env.VITE_API_KEY)
 
-  var requestOptions = {
+  const requestOptions = {
     method: 'DELETE',
     headers: myHeaders,
     redirect: 'follow'

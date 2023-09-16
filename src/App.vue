@@ -31,7 +31,6 @@ main {
 
 @media only screen and (max-width: 375px) {
   main {
-    /*before it was 10px*/
     padding-top: 0px;
   }
 }

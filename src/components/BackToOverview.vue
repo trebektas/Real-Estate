@@ -21,11 +21,13 @@ const currentPathObject = router.currentRoute.value.name
     <span
       @click="currentPathObject === 'houseDetails' ? $router.push({ path: '/' }) : $router.back()"
       class="back-icon"
-      ><img
+    >
+      <img
         :src="
           mobileStore.mobileView && currentPathObject === 'houseDetails' ? backWhiteIcon : backIcon
         "
-    /></span>
+      />
+    </span>
     <span v-if="!mobileStore.mobileView" class="backButtonText">Back to overview</span>
   </div>
 </template>
