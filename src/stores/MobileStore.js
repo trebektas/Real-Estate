@@ -7,8 +7,6 @@ export const useMobileStore = defineStore('MobileStore', {
     }
   },
 
-  //   getters: {},
-
   actions: {
     checkMobile() {
       this.mobileView = screen.width <= 375 ? true : false

@@ -3,7 +3,7 @@ import emptyHousesIcon from '../assets/images/img_empty_houses@3x.png'
 </script>
 
 <template>
-  <section class="section-overview">
+  <section>
     <div class="container-empty-search">
       <img :src="emptyHousesIcon" class="search-not-found" />
       <p>No results found.</p>

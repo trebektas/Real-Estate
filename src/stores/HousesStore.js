@@ -48,6 +48,7 @@ export const useHouseStore = defineStore('HousesStore', {
         console.log('Error occurred:', error)
       }
     },
+
     sortByPrice() {
       if (this.filteredData.length > 0) {
         this.filteredData = this.filteredData.sort((a, b) => a.price - b.price)

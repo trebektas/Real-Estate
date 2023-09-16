@@ -12,6 +12,7 @@ const props = defineProps({
 
 const houseStore = useHouseStore()
 
+// Sort based on sortedByPrice condition
 if (houseStore.sortedByPrice) {
   houseStore.sortByPrice()
 } else {
@@ -20,7 +21,7 @@ if (houseStore.sortedByPrice) {
 </script>
 
 <template>
-  <section class="section-overview">
+  <section>
     <h2 v-if="props.countFilteredHouses" class="counter-results">
       {{ props.countFilteredHouses }}
       {{ props.countFilteredHouses === 1 ? 'result' : 'results' }} found

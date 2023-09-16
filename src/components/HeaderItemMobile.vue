@@ -10,6 +10,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 const currentRouteIsAbout = ref(false)
 
+// Update currentRouteIsAbout ref value whenever route name changes
 watch(
   () => route.name,
   () => {
@@ -23,22 +24,18 @@ watch(
 
 <template>
   <nav class="navigation-mobile">
-    <RouterLink to="/" class="router-home">
+    <RouterLink to="/" class="router-link">
       <img v-if="!currentRouteIsAbout" :src="HomeActive" alt="Active Home Icon" />
       <img v-if="currentRouteIsAbout" :src="Home" alt="Home Icon" />
     </RouterLink>
-    <RouterLink to="/about">
+    <RouterLink to="/about" class="router-link">
       <img v-if="currentRouteIsAbout" :src="InfoActive" alt="Active Info Icon" />
       <img v-if="!currentRouteIsAbout" :src="Info" alt="Info Icon" />
     </RouterLink>
   </nav>
 </template>
 
-<script>
-export default {}
-</script>
-
-<style scoped>
+<style>
 .navigation-mobile {
   display: flex;
   justify-content: space-around;
@@ -51,7 +48,7 @@ export default {}
   z-index: 999;
 }
 
-a img {
+.router-link img {
   width: 2rem;
 }
 </style>

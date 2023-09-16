@@ -7,6 +7,7 @@ import Logo from '../assets/logo.png'
 const route = useRoute()
 const currentRouteIsAbout = ref(false)
 
+// Update currentRouteIsAbout ref value whenever route name changes
 watch(
   () => route.name,
   () => {
@@ -19,21 +20,21 @@ watch(
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
+  <header class="navigation-header">
+    <div class="navigation-wrapper">
       <img :src="Logo" alt="DTT Logo" />
       <nav class="navigation">
         <RouterLink to="/" :class="currentRouteIsAbout ? '' : 'header-active'">Houses</RouterLink>
-        <RouterLink to="/about" :class="currentRouteIsAbout ? 'header-active' : ''"
-          >About</RouterLink
-        >
+        <RouterLink to="/about" :class="currentRouteIsAbout ? 'header-active' : ''">
+          About
+        </RouterLink>
       </nav>
     </div>
   </header>
 </template>
 
-<style scoped>
-header {
+<style>
+.navigation-header {
   width: 100%;
   display: flex;
   position: fixed;
@@ -42,14 +43,14 @@ header {
   height: 100px;
   z-index: 999;
 }
-.wrapper {
+.navigation-wrapper {
   display: flex;
   align-items: center;
   width: 1320px;
   margin: 0 auto;
 }
 
-.wrapper img {
+.navigation-wrapper img {
   width: 150px;
 }
 
@@ -68,29 +69,29 @@ header {
 }
 
 @media only screen and (max-width: 1400px) {
-  .wrapper {
+  .navigation-wrapper {
     width: 1000px;
   }
 }
 
 @media only screen and (max-width: 1050px) {
-  .wrapper {
+  .navigation-wrapper {
     width: 800px;
   }
 }
 
 @media only screen and (max-width: 850px) {
-  .wrapper {
+  .navigation-wrapper {
     width: 500px;
   }
 }
 
 @media only screen and (max-width: 550px) {
-  .wrapper {
+  .navigation-wrapper {
     width: 350px;
   }
 
-  .wrapper img {
+  .navigation-wrapper img {
     width: 100px;
   }
 }

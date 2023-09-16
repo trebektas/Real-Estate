@@ -3,14 +3,16 @@ import plusWhiteIcon from '../assets/icons/ic_plus_white@3x.png'
 import plusGreyIcon from '../assets/icons/ic_plus_grey@3x.png'
 
 import { useMobileStore } from '../stores/MobileStore'
+
 const mobileStore = useMobileStore()
 </script>
 
 <template>
   <button class="button-create-new" @click="$router.push({ name: 'createNewListing' })">
-    <span class="plus-icon-container"
-      ><img :src="mobileStore.mobileView ? plusGreyIcon : plusWhiteIcon" class="plus-icon" /></span
-    ><span v-if="!mobileStore.mobileView" class="create-button-text">CREATE NEW</span>
+    <span class="plus-icon-container">
+      <img :src="mobileStore.mobileView ? plusGreyIcon : plusWhiteIcon" class="plus-icon" />
+    </span>
+    <span v-if="!mobileStore.mobileView" class="create-button-text">CREATE NEW</span>
   </button>
 </template>
 

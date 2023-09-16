@@ -4,6 +4,7 @@ import SearchBar from '../components/SearchBar.vue'
 import CreateNewHouse from '../components/CreateNewHouse.vue'
 import SortHouses from '../components/SortHouses.vue'
 import EmptySearch from '../components/EmptySearch.vue'
+
 import { useHouseStore } from '../stores/HousesStore'
 
 const houseStore = useHouseStore()
@@ -11,7 +12,7 @@ houseStore.fetchHouses()
 </script>
 
 <template>
-  <div class="wrapper">
+  <div>
     <section class="section-overview-header">
       <div class="overview-header">
         <h1 class="header-houses">Houses</h1>
