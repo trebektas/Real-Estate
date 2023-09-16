@@ -1,104 +1,69 @@
 <script setup>
-import { ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { Field, Form, ErrorMessage } from 'vee-validate'
-import * as Yup from 'yup'
-
 import BackToOverview from '../components/BackToOverview.vue'
 import uploadIcon from '../assets/icons/ic_upload@3x.png'
 import clearWhiteIcon from '../assets/icons/ic_clear_white@3x.png'
 
+import { ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { Field, Form, ErrorMessage } from 'vee-validate'
+import { validationSchema } from '../validations/house'
+
 const route = useRoute()
 const router = useRouter()
+
 const formValues = ref({})
 const currentImageData = ref(null)
 const newImageData = ref(null)
-const newPictureUrl = ref(null)
+const newImageUrl = ref(null)
+
+const isEditListing = ref('false')
 
 const myHeaders = new Headers()
 myHeaders.append('X-Api-Key', import.meta.env.VITE_API_KEY)
 
-const requestHouseDetailsOptions = {
-  method: 'GET',
-  headers: myHeaders,
-  redirect: 'follow'
+// update isEditListing ref value whenever route name changes
+watch(
+  () => route.name,
+  () => {
+    route.name === 'houseEdit' ? (isEditListing.value = true) : (isEditListing.value = false)
+  },
+  { immediate: true }
+)
+
+// Set initial values if the user in edit listing
+if (isEditListing.value === true) {
+  const requestHouseDetailsOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  }
+
+  fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, requestHouseDetailsOptions)
+    .then((response) => response.json())
+    .then((data) => {
+      currentImageData.value = data[0].image
+
+      formValues.value = {
+        streetName: data[0].location.street,
+        houseNumber: data[0].location.houseNumber,
+        numberAddition:
+          data[0].location.houseNumberAddition === 'undefined'
+            ? ''
+            : data[0].location.houseNumberAddition,
+        zip: data[0].location.zip,
+        city: data[0].location.city,
+        image: data[0].image,
+        price: data[0].price,
+        size: data[0].size,
+        hasGarage: data[0].hasGarage,
+        bedrooms: data[0].rooms.bedrooms,
+        bathrooms: data[0].rooms.bathrooms,
+        constructionYear: data[0].constructionYear,
+        description: data[0].description
+      }
+    })
+    .catch((error) => console.log('error', error))
 }
-
-fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, requestHouseDetailsOptions)
-  .then((response) => response.json())
-  .then((data) => {
-    currentImageData.value = data[0].image
-
-    // Set initial values
-    formValues.value = {
-      streetName: data[0].location.street,
-      houseNumber: data[0].location.houseNumber,
-      numberAddition:
-        data[0].location.houseNumberAddition === 'undefined'
-          ? ''
-          : data[0].location.houseNumberAddition,
-      zip: data[0].location.zip,
-      city: data[0].location.city,
-      image: data[0].image,
-      price: data[0].price,
-      size: data[0].size,
-      hasGarage: data[0].hasGarage,
-      bedrooms: data[0].rooms.bedrooms,
-      bathrooms: data[0].rooms.bathrooms,
-      constructionYear: data[0].constructionYear,
-      description: data[0].description
-    }
-  })
-  .catch((error) => console.log('error', error))
-
-const validationSchema = Yup.object({
-  streetName: Yup.string().required('Required field missing.').trim(),
-  houseNumber: Yup.number()
-    .required('Required field missing.')
-    .typeError('Required field must be a number.')
-    .integer('Must be a whole number (no decimals)')
-    .positive('Must be a positive number'),
-  numberAddition: Yup.string().trim(),
-  zip: Yup.string().required('Required field missing.').trim(),
-  city: Yup.string().required('Required field missing.').trim(),
-  image: Yup.mixed()
-    .required('Required field missing.')
-    .test('is-valid-size', 'Max allowed size is 7MB', (value) => {
-      if (newImageData.value !== null) {
-        return value && value.size <= Number(import.meta.env.VITE_MAX_FILE_SIZE)
-      } else return true
-    }),
-  price: Yup.number()
-    .required('Required field missing.')
-    .typeError('Required field must be a number.')
-    .integer('Must be a whole number (no decimals)')
-    .positive('Must be a positive number'),
-  size: Yup.number()
-    .required('Required field missing.')
-    .typeError('Required field must be a number.')
-    .integer('Must be a whole number (no decimals)')
-    .positive('Must be a positive number'),
-  hasGarage: Yup.boolean().required('Required field missing.'),
-  bedrooms: Yup.number()
-    .required('Required field missing.')
-    .typeError('Required field must be a number.')
-    .integer('Must be a whole number (no decimals)')
-    .positive('Must be a positive number'),
-  bathrooms: Yup.number()
-    .required('Required field missing.')
-    .typeError('Required field must be a number.')
-    .integer('Must be a whole number (no decimals)')
-    .positive('Must be a positive number'),
-  constructionYear: Yup.number()
-    .required('Required field missing.')
-    .typeError('Required field must be a number.')
-    .integer('Must be a whole number (no decimals)')
-    .positive('Must be a positive number')
-    .test('len', 'Must be exactly 4 characters', (val) => val.toString().length === 4)
-    .min(1901, 'Must be greater than or equal to 1901')
-    .max(2023, 'Must be less than or equal to 2023'),
-  description: Yup.string().required('Required field missing.')
-})
 
 function onSubmit(values) {
   const formData = new FormData()
@@ -131,54 +96,82 @@ function onSubmit(values) {
   formData.append('hasGarage', hasGarage)
   formData.append('description', description)
 
-  const requestHouseEditOptions = {
+  const requestOptions = {
     method: 'POST',
     headers: myHeaders,
     body: formData,
     redirect: 'follow'
   }
 
-  //update house details
-  fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, requestHouseEditOptions)
-    .then(() => {
-      //upload new house image
-      if (newImageData.value !== null) {
-        const formUploadData = new FormData()
-        formUploadData.append('image', image, image.name)
+  if (isEditListing.value === false) {
+    //fetch for create new listing
+    fetch(import.meta.env.VITE_API_URL, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data) {
+          const formUploadData = new FormData()
+          formUploadData.append('image', image, image.name)
 
-        const uploadImageOptions = {
-          method: 'POST',
-          headers: myHeaders,
-          body: formUploadData,
-          redirect: 'follow'
+          const uploadImageOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formUploadData,
+            redirect: 'follow'
+          }
+
+          fetch(`${import.meta.env.VITE_API_URL}/${data.id}/upload`, uploadImageOptions)
+            .then((response) => {
+              if (response.ok) {
+                setTimeout(() => {
+                  router.push({ name: 'houseDetails', params: { id: data.id } })
+                }, 1500)
+              }
+            })
+            .catch((error) => console.log('Error occurred:', error))
         }
+      })
+      .catch((error) => console.log('Error occurred:', error))
+  } else {
+    //fetch for edit the house listing
+    fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, requestOptions)
+      .then(() => {
+        if (newImageData.value !== null) {
+          const formUploadData = new FormData()
+          formUploadData.append('image', image, image.name)
 
-        //fetch new house image
-        fetch(
-          `${import.meta.env.VITE_API_URL}/${route.params.id}/upload`,
-          uploadImageOptions
-        ).catch((error) => console.log('Error occurred:', error))
-      }
-    })
-    .then(() => {
-      setTimeout(() => {
-        router.push({ name: 'houseDetails', params: { id: route.params.id } })
-      }, 1000)
-    })
-    .catch((error) => console.log('Error occurred:', error))
+          const uploadImageOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formUploadData,
+            redirect: 'follow'
+          }
+
+          fetch(
+            `${import.meta.env.VITE_API_URL}/${route.params.id}/upload`,
+            uploadImageOptions
+          ).catch((error) => console.log('Error occurred:', error))
+        }
+      })
+      .then(() => {
+        setTimeout(() => {
+          router.push({ name: 'houseDetails', params: { id: route.params.id } })
+        }, 1500)
+      })
+      .catch((error) => console.log('Error occurred:', error))
+  }
 }
 
 function updateImageData(event) {
   if (event.target.files[0]) {
     newImageData.value = event.target.files[0]
-    newPictureUrl.value = URL.createObjectURL(newImageData.value)
+    newImageUrl.value = URL.createObjectURL(newImageData.value)
   }
 }
 
-function clearUploadPicture() {
+function clearUploadImage() {
   currentImageData.value = null
   newImageData.value = null
-  newPictureUrl.value = null
+  newImageUrl.value = null
 }
 </script>
 
@@ -187,14 +180,14 @@ function clearUploadPicture() {
     <div class="wrapper-new-listing">
       <div class="header-new-listing">
         <BackToOverview />
-        <h1>Edit listing</h1>
+        <h1>{{ isEditListing === true ? 'Edit listing' : 'Create new listing' }}</h1>
       </div>
 
       <div class="container-form">
         <Form
           @submit="onSubmit"
           :validation-schema="validationSchema"
-          :initial-values="formValues"
+          :initial-values="isEditListing ? formValues : null"
           v-slot="{ meta, setFieldValue }"
         >
           <!--STREET NAME INPUT-->
@@ -245,7 +238,6 @@ function clearUploadPicture() {
           <!--UPLOAD PICTURE INPUT-->
           <div class="container-input">
             <label for="image">Upload picture (PNG or JPG)*</label>
-            <!-- <Field id="image" type="file" name="image" accept=".png,.jpg" /> -->
             <Field id="image" name="image" type="file" v-slot="{ field }">
               <input
                 id="image"
@@ -259,7 +251,7 @@ function clearUploadPicture() {
               />
 
               <button
-                v-if="!currentImageData && !newImageData"
+                v-if="isEditListing === true ? !currentImageData && !newImageData : !newImageData"
                 type="button"
                 @click="$refs.fileImageInput.click()"
                 class="upload-button"
@@ -267,15 +259,20 @@ function clearUploadPicture() {
                 <img :src="uploadIcon" />
               </button>
 
-              <div v-if="currentImageData || newImageData" class="container-uploaded-picture">
+              <div
+                v-if="isEditListing === true ? currentImageData || newImageData : newImageData"
+                class="container-uploaded-picture"
+              >
+                <img v-if="isEditListing === false" :src="newImageUrl" class="uploaded-picture" />
                 <img
-                  :src="currentImageData && !newPictureUrl ? currentImageData : newPictureUrl"
+                  v-if="isEditListing === true"
+                  :src="currentImageData && !newImageUrl ? currentImageData : newImageUrl"
                   class="uploaded-picture"
                 />
                 <img
                   :src="clearWhiteIcon"
                   class="clear-picture-icon"
-                  @click="clearUploadPicture(), setFieldValue('image', null)"
+                  @click="clearUploadImage(), setFieldValue('image', null)"
                 />
               </div>
             </Field>
@@ -357,6 +354,15 @@ function clearUploadPicture() {
 
           <div class="container-button">
             <button
+              v-if="isEditListing === false"
+              type="submit"
+              class="post-button"
+              :class="!meta.valid ? 'post-button-disabled' : ''"
+            >
+              POST
+            </button>
+            <button
+              v-if="isEditListing === true"
               type="submit"
               class="save-button"
               :class="!meta.dirty || !meta.valid ? 'save-button-disabled' : ''"
@@ -525,6 +531,23 @@ select option[value=''] {
   padding: 20px 0 30px;
 }
 
+.post-button {
+  width: 200px;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 10px;
+  background-color: var(--element-primary);
+  color: var(--element-background-2);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.post-button-disabled {
+  opacity: 0.5;
+}
+
 .save-button {
   width: 200px;
   padding: 15px 20px;
@@ -576,6 +599,42 @@ select option[value=''] {
   transform: translate(13px, -10px);
 }
 
+@media only screen and (max-width: 1400px) {
+  .wrapper-new-listing {
+    width: 1000px;
+  }
+}
+
+@media only screen and (max-width: 1050px) {
+  .wrapper-new-listing {
+    width: 800px;
+  }
+}
+
+@media only screen and (max-width: 850px) {
+  .wrapper-new-listing {
+    width: 500px;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .wrapper-new-listing {
+    width: 350px;
+  }
+
+  .container-form {
+    width: 350px;
+  }
+
+  .double-input {
+    width: 160px;
+  }
+
+  .container-input input {
+    font-size: 12px;
+  }
+}
+
 @media only screen and (max-width: 375px) {
   .container-new-listing-main {
     margin-bottom: 10vh;
@@ -610,10 +669,6 @@ select option[value=''] {
     font-size: 12px;
   }
 
-  .container-input input {
-    font-size: 12px;
-  }
-
   .select-input {
     font-size: 12px;
   }
@@ -623,6 +678,11 @@ select option[value=''] {
   }
 
   .input-description {
+    font-size: 12px;
+  }
+
+  .post-button {
+    width: 320px;
     font-size: 12px;
   }
 
