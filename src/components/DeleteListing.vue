@@ -43,7 +43,7 @@ function onSubmit() {
 
 <template>
   <div class="delete-popup-container">
-    <div className="delete-popup-body">
+    <div class="delete-popup-body">
       <form class="popup-form" noValidate @submit.prevent="onSubmit" ref="customForm">
         <h2>Delete listing</h2>
         <p>Are you sure you want to delete this listing?</p>
