@@ -99,11 +99,11 @@ houseStore.fetchHouses()
 
 @media (min-width: 376px) and (max-width: 550px) {
   .section-overview-header {
-    width: 350px;
+    width: 95%;
   }
 
   .section-overview-main {
-    width: 350px;
+    width: 95%;
   }
 
   .overview-header {
