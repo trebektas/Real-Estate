@@ -107,6 +107,14 @@ const props = defineProps({
     height: 100px;
   }
 
+  .icons {
+    margin-right: 7px;
+  }
+
+  .values {
+    margin-right: 13px;
+  }
+
   .info {
     margin-bottom: 8px;
   }
@@ -121,6 +129,14 @@ const props = defineProps({
   .house-image img {
     width: 100px;
     height: 100px;
+  }
+
+  .icons {
+    margin-right: 7px;
+  }
+
+  .values {
+    margin-right: 15px;
   }
 
   .info {
