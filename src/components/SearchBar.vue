@@ -20,12 +20,13 @@ function submitSearch() {
 </script>
 
 <template>
-  <form class="search-form" @submit.prevent="submitSearch" autocomplete="off">
+  <form class="search-form" autocomplete="off">
     <input
       name="searchBar"
       type="text"
       placeholder="Search for a house"
       v-model.trim="houseStore.searchQuery"
+      @keyup="submitSearch"
     />
     <img class="clear-icon" v-if="houseStore.searchQuery" :src="clearIcon" @click="clearInput" />
   </form>
