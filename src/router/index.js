@@ -7,27 +7,42 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        title: 'Home'
+      }
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/AboutView.vue'),
+      meta: {
+        title: 'About'
+      }
     },
     {
       path: '/create',
       name: 'createNewListing',
-      component: () => import('../views/ListingView.vue')
+      component: () => import('../views/ListingView.vue'),
+      meta: {
+        title: 'Create House'
+      }
     },
     {
       path: '/houses/:id',
       name: 'houseDetails',
-      component: () => import('../views/HouseDetailsView.vue')
+      component: () => import('../views/HouseDetailsView.vue'),
+      meta: {
+        title: 'House Details'
+      }
     },
     {
       path: '/edit/:id',
       name: 'houseEdit',
-      component: () => import('../views/ListingView.vue')
+      component: () => import('../views/ListingView.vue'),
+      meta: {
+        title: 'Edit House'
+      }
     }
   ]
 })

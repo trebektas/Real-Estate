@@ -13,7 +13,9 @@ app.use(router)
 
 app.mount('#app')
 
-router.beforeEach(() => {
+router.beforeEach((to) => {
+  document.title = to.meta.title ?? 'Real Estate'
+
   window.scrollTo({
     top: 0,
     left: 0,
