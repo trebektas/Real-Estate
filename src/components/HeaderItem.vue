@@ -41,7 +41,7 @@ watch(
   background-color: var(--element-background-2);
   font-family: 'Montserrat', sans-serif;
   height: 100px;
-  z-index: 999;
+  z-index: 9999;
 }
 .navigation-wrapper {
   display: flex;
