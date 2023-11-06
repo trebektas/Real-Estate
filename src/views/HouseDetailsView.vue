@@ -1,8 +1,4 @@
 <script setup>
-import editIcon from '../assets/icons/ic_edit@3x.png'
-import editWhiteIcon from '../assets/icons/ic_edit_white@3x.png'
-import deleteIcon from '../assets/icons/ic_delete@3x.png'
-import deleteWhiteIcon from '../assets/icons/ic_delete_white@3x.png'
 import locationIcon from '../assets/icons/ic_location@3x.png'
 import priceIcon from '../assets/icons/ic_price@3x.png'
 import sizeIcon from '../assets/icons/ic_size@3x.png'
@@ -12,19 +8,17 @@ import bathIcon from '../assets/icons/ic_bath@3x.png'
 import garageIcon from '../assets/icons/ic_garage@3x.png'
 
 import BackToOverview from '../components/BackToOverview.vue'
-import DeleteListing from '../components/DeleteListing.vue'
 
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { ref } from 'vue'
 import { useMobileStore } from '../stores/MobileStore'
+import EditDeleteTab from '../components/EditDeleteTab.vue'
 
 const route = useRoute()
-const router = useRouter()
 
 const mobileStore = useMobileStore()
 
 const houseDetails = ref([])
-const isDeleteFormOpen = ref(false)
 
 const config = {
   headers: {
@@ -42,35 +36,16 @@ fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, config)
 function formatPrice(price) {
   return new Intl.NumberFormat('en-DE').format(price)
 }
-
-const onEditClick = () => {
-  router.push({ name: 'houseEdit', params: { id: route.params.id } })
-}
-
-const openDeletePopUp = () => {
-  isDeleteFormOpen.value = true
-}
-
-const closeDeletePopUp = () => {
-  isDeleteFormOpen.value = false
-}
 </script>
 
 <template>
-  <DeleteListing v-if="isDeleteFormOpen" @close-pop-up="closeDeletePopUp" />
   <div class="container-house-details-main">
     <BackToOverview />
     <div class="container-house-details">
       <div v-if="houseDetails" class="house-details">
         <div v-for="house in houseDetails" :key="house.id">
           <!--Edit/Delete tab conditions for mobile >> house.madeByMe && mobileStore.mobileView-->
-          <div v-if="house.madeByMe && mobileStore.mobileView" class="edit-delete-mobile-tab">
-            <span class="edit-delete-span" @click="onEditClick"
-              ><img :src="editWhiteIcon" alt="Edit Icon" /></span
-            ><span class="edit-delete-span"
-              ><img :src="deleteWhiteIcon" alt="Delete Icon" @click="openDeletePopUp"
-            /></span>
-          </div>
+          <EditDeleteTab v-if="house.madeByMe && mobileStore.mobileView" />
           <div class="house-details-image"><img :src="house.image" :alt="house.id" /></div>
           <div class="house-details-section">
             <div class="container-house-address">
@@ -79,13 +54,7 @@ const closeDeletePopUp = () => {
                 {{ house.location.houseNumber }}
               </div>
               <!--Edit/Delete tab conditions for desktop >> house.madeByMe && !mobileStore.mobileView-->
-              <div v-if="house.madeByMe && !mobileStore.mobileView">
-                <span class="edit-delete-span" @click="onEditClick"
-                  ><img :src="editIcon" alt="Edit Icon" /></span
-                ><span class="edit-delete-span"
-                  ><img :src="deleteIcon" @click="openDeletePopUp" alt="Delete Icon"
-                /></span>
-              </div>
+              <EditDeleteTab v-if="house.madeByMe && !mobileStore.mobileView" />
             </div>
 
             <div class="house-details-location">
@@ -153,14 +122,18 @@ const closeDeletePopUp = () => {
 }
 
 .house-details-section {
+  position: relative;
   margin: 20px;
 }
 
 .container-house-address {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+}
+
+.container-house-address .edit-delete-tab {
+  margin: 0;
 }
 
 .house-address {
@@ -168,15 +141,6 @@ const closeDeletePopUp = () => {
   font-weight: 700;
   font-size: 22px;
   color: var(--text-primary);
-}
-
-.edit-delete-span {
-  margin-left: 20px;
-  cursor: pointer;
-}
-
-.edit-delete-span img {
-  height: 20px;
 }
 
 .house-details-location {
@@ -267,15 +231,13 @@ const closeDeletePopUp = () => {
     width: auto;
   }
 
+  .house-details .edit-delete-tab {
+    margin-top: 30px;
+  }
+
   .house-details-image img {
     width: 375px;
     height: 200px;
-  }
-
-  .edit-delete-mobile-tab {
-    position: absolute;
-    margin: 30px 20px 0 0;
-    right: 0;
   }
 
   .house-details-image {

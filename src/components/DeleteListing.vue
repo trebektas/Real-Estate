@@ -2,6 +2,12 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+const props = defineProps({
+  houseId: {
+    type: Number
+  }
+})
+
 const route = useRoute()
 const router = useRouter()
 
@@ -33,9 +39,17 @@ function onSubmit() {
     redirect: 'follow'
   }
 
-  fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, requestOptions)
+  fetch(
+    `${import.meta.env.VITE_API_URL}/${props.houseId ? props.houseId : route.params.id}`,
+    requestOptions
+  )
     .then(() => {
-      router.push({ name: 'home' })
+      if (props.houseId) {
+        // Reloads the current route
+        router.go()
+      } else {
+        router.push({ name: 'home' })
+      }
     })
     .catch((error) => console.log('error', error))
 }
@@ -67,7 +81,7 @@ function onSubmit() {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9998;
+  z-index: 99998;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,7 +99,7 @@ function onSubmit() {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 99999;
   padding: 50px;
 }
 

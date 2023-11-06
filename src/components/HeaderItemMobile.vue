@@ -45,7 +45,7 @@ watch(
   position: fixed;
   bottom: 0;
   background-color: var(--element-background-2);
-  z-index: 999;
+  z-index: 9999;
 }
 
 .router-link img {
