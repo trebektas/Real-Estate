@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { apiService } from '../services/apiService'
 
 const props = defineProps({
   houseId: {
@@ -30,18 +31,9 @@ onUnmounted(() => {
 })
 
 function onSubmit() {
-  const myHeaders = new Headers()
-  myHeaders.append('X-Api-Key', import.meta.env.VITE_API_KEY)
-
-  const requestOptions = {
-    method: 'DELETE',
-    headers: myHeaders,
-    redirect: 'follow'
-  }
-
-  fetch(
+  apiService(
     `${import.meta.env.VITE_API_URL}/${props.houseId ? props.houseId : route.params.id}`,
-    requestOptions
+    'DELETE'
   )
     .then(() => {
       if (props.houseId) {
