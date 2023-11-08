@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { apiService } from '../services/apiService'
 
 export const useHouseStore = defineStore('HousesStore', {
   state: () => {
@@ -33,13 +34,7 @@ export const useHouseStore = defineStore('HousesStore', {
   actions: {
     async fetchHouses() {
       try {
-        const config = {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Api-Key': import.meta.env.VITE_API_KEY
-          }
-        }
-        const response = await fetch(import.meta.env.VITE_API_URL, config)
+        const response = await apiService(import.meta.env.VITE_API_URL, 'GET')
         const data = await response.json()
         this.housesData = this.sortedByPrice
           ? data.sort((a, b) => a.price - b.price)

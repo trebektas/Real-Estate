@@ -7,6 +7,7 @@ import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import { validationSchema } from '../validations/house'
+import { apiService } from '../services/apiService'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,9 +18,6 @@ const newImageData = ref(null)
 const newImageUrl = ref(null)
 
 const isEditListing = ref('false')
-
-const myHeaders = new Headers()
-myHeaders.append('X-Api-Key', import.meta.env.VITE_API_KEY)
 
 // update isEditListing ref value whenever route name changes
 watch(
@@ -32,13 +30,7 @@ watch(
 
 // Set initial values if the user in edit listing
 if (isEditListing.value === true) {
-  const requestHouseDetailsOptions = {
-    method: 'GET',
-    headers: myHeaders,
-    redirect: 'follow'
-  }
-
-  fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, requestHouseDetailsOptions)
+  apiService(`${import.meta.env.VITE_API_URL}/${route.params.id}`, 'GET')
     .then((response) => response.json())
     .then((data) => {
       currentImageData.value = data[0].image
@@ -96,30 +88,17 @@ function onSubmit(values) {
   formData.append('hasGarage', hasGarage)
   formData.append('description', description)
 
-  const requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: formData,
-    redirect: 'follow'
-  }
-
   if (isEditListing.value === false) {
     //fetch for create new listing
-    fetch(import.meta.env.VITE_API_URL, requestOptions)
+
+    apiService(import.meta.env.VITE_API_URL, 'POST', formData)
       .then((response) => response.json())
       .then((data) => {
         if (data) {
           const formUploadData = new FormData()
           formUploadData.append('image', image, image.name)
 
-          const uploadImageOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: formUploadData,
-            redirect: 'follow'
-          }
-
-          fetch(`${import.meta.env.VITE_API_URL}/${data.id}/upload`, uploadImageOptions)
+          apiService(`${import.meta.env.VITE_API_URL}/${data.id}/upload`, 'POST', formUploadData)
             .then((response) => {
               if (response.ok) {
                 setTimeout(() => {
@@ -133,22 +112,17 @@ function onSubmit(values) {
       .catch((error) => console.log('Error occurred:', error))
   } else {
     //fetch for edit the house listing
-    fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, requestOptions)
+
+    apiService(`${import.meta.env.VITE_API_URL}/${route.params.id}`, 'POST', formData)
       .then(() => {
         if (newImageData.value !== null) {
           const formUploadData = new FormData()
           formUploadData.append('image', image, image.name)
 
-          const uploadImageOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: formUploadData,
-            redirect: 'follow'
-          }
-
-          fetch(
+          apiService(
             `${import.meta.env.VITE_API_URL}/${route.params.id}/upload`,
-            uploadImageOptions
+            'POST',
+            formUploadData
           ).catch((error) => console.log('Error occurred:', error))
         }
       })

@@ -13,6 +13,7 @@ import { useRoute } from 'vue-router'
 import { ref } from 'vue'
 import { useMobileStore } from '../stores/MobileStore'
 import EditDeleteTab from '../components/EditDeleteTab.vue'
+import { apiService } from '../services/apiService'
 
 const route = useRoute()
 
@@ -20,15 +21,8 @@ const mobileStore = useMobileStore()
 
 const houseDetails = ref([])
 
-const config = {
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Api-Key': import.meta.env.VITE_API_KEY
-  }
-}
-
 //get house details data
-fetch(`${import.meta.env.VITE_API_URL}/${route.params.id}`, config)
+apiService(`${import.meta.env.VITE_API_URL}/${route.params.id}`, 'GET')
   .then((response) => response.json())
   .then((data) => (houseDetails.value = data))
   .catch((error) => console.log('Error occurred:', error))
