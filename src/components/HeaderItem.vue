@@ -5,15 +5,30 @@ import { RouterLink, useRoute } from 'vue-router'
 import Logo from '../assets/logo.png'
 
 const route = useRoute()
-const currentRouteIsAbout = ref(false)
+const currentRoute = ref('home')
 
-// Update currentRouteIsAbout ref value whenever route name changes
+const navRoutes = [
+  { path: '/', name: 'home', title: 'Houses' },
+  { path: '/about', name: 'about', title: 'About' }
+]
+
+// Update currentRoute ref based on navRoutes variable when route name changes
 watch(
   () => route.name,
   () => {
-    route.name === 'about'
-      ? (currentRouteIsAbout.value = true)
-      : (currentRouteIsAbout.value = false)
+    const routeExists = navRoutes.find((object) => {
+      return object.name === route.name ? true : false
+    })
+
+    if (routeExists) {
+      navRoutes.forEach((navRoute) => {
+        if (navRoute.name === route.name) {
+          currentRoute.value = route.name
+        }
+      })
+    } else {
+      currentRoute.value = 'home'
+    }
   },
   { immediate: true }
 )
@@ -24,10 +39,13 @@ watch(
     <div class="navigation-wrapper">
       <img :src="Logo" alt="DTT Logo" />
       <nav class="navigation">
-        <RouterLink to="/" :class="currentRouteIsAbout ? '' : 'header-active'">Houses</RouterLink>
-        <RouterLink to="/about" :class="currentRouteIsAbout ? 'header-active' : ''">
-          About
-        </RouterLink>
+        <RouterLink
+          v-for="(route, index) in navRoutes"
+          :key="index"
+          :to="route.path"
+          :class="currentRoute === route.name ? 'header-active' : ''"
+          >{{ route.title }}</RouterLink
+        >
       </nav>
     </div>
   </header>
