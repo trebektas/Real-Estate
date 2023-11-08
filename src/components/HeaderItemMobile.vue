@@ -8,15 +8,46 @@ import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const currentRouteIsAbout = ref(false)
+const currentRoute = ref('home')
 
-// Update currentRouteIsAbout ref value whenever route name changes
+const navRoutes = [
+  {
+    path: '/',
+    name: 'home',
+    title: 'Houses',
+    activeIcon: HomeActive,
+    icon: Home,
+    activeAlt: 'Active Home Icon',
+    alt: 'Home Icon'
+  },
+  {
+    path: '/about',
+    name: 'about',
+    title: 'About',
+    activeIcon: InfoActive,
+    icon: Info,
+    activeAlt: 'Active About Icon',
+    alt: 'About Icon'
+  }
+]
+
+// Update currentRoute ref based on navRoutes variable when route name changes
 watch(
   () => route.name,
   () => {
-    route.name === 'about'
-      ? (currentRouteIsAbout.value = true)
-      : (currentRouteIsAbout.value = false)
+    const routeExists = navRoutes.find((object) => {
+      return object.name === route.name ? true : false
+    })
+
+    if (routeExists) {
+      navRoutes.forEach((navRoute) => {
+        if (navRoute.name === route.name) {
+          currentRoute.value = route.name
+        }
+      })
+    } else {
+      currentRoute.value = 'home'
+    }
   },
   { immediate: true }
 )
@@ -24,13 +55,14 @@ watch(
 
 <template>
   <nav class="navigation-mobile">
-    <RouterLink to="/" class="router-link">
-      <img v-if="!currentRouteIsAbout" :src="HomeActive" alt="Active Home Icon" />
-      <img v-if="currentRouteIsAbout" :src="Home" alt="Home Icon" />
-    </RouterLink>
-    <RouterLink to="/about" class="router-link">
-      <img v-if="currentRouteIsAbout" :src="InfoActive" alt="Active Info Icon" />
-      <img v-if="!currentRouteIsAbout" :src="Info" alt="Info Icon" />
+    <RouterLink
+      v-for="(route, index) in navRoutes"
+      :key="index"
+      :to="route.path"
+      class="router-link"
+    >
+      <img v-if="currentRoute === route.name" :src="route.activeIcon" :alt="route.activeAlt" />
+      <img v-else :src="route.icon" :alt="route.alt" />
     </RouterLink>
   </nav>
 </template>
