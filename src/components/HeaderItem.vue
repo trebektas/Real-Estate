@@ -35,7 +35,7 @@ watch(
 </script>
 
 <template>
-  <header class="navigation-header">
+  <header class="navigation-header not-mobile-content">
     <div class="navigation-wrapper">
       <img :src="Logo" alt="DTT Logo" />
       <nav class="navigation">

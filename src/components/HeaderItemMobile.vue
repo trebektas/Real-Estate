@@ -54,7 +54,7 @@ watch(
 </script>
 
 <template>
-  <nav class="navigation-mobile">
+  <nav class="navigation-mobile mobile-content">
     <RouterLink
       v-for="(route, index) in navRoutes"
       :key="index"

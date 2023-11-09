@@ -126,6 +126,7 @@ houseStore.fetchHouses()
   .section-overview-main {
     font-size: 12px;
     width: 340px;
+    margin-bottom: 12vh;
   }
 
   .overview-header {

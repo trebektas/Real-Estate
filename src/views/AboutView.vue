@@ -1,15 +1,12 @@
 <script setup>
 import Logo from '../assets/logo.png'
-import { useMobileStore } from '../stores/MobileStore'
-
-const mobileStore = useMobileStore()
 </script>
 
 <template>
   <section class="container-about-section">
-    <h1 v-if="mobileStore.mobileView">About</h1>
-    <h1 v-if="!mobileStore.mobileView">About DTT Real Estate</h1>
-    <h2 v-if="mobileStore.mobileView">About DTT Real Estate</h2>
+    <h1 class="mobile-content about-header-1">About</h1>
+    <h1 class="not-mobile-content about-header-1">About DTT Real Estate</h1>
+    <h2 class="mobile-content about-header-2">About DTT Real Estate</h2>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu scelerisque lectus. Ut
       elementum pulvinar velit, et efficitur arcu finibus maximus. Nullam vitae tempor leo. Praesent
@@ -24,8 +21,10 @@ const mobileStore = useMobileStore()
       sagittis ut, sagittis sed nunc. Donec at porta mi. Donec pulvinar magna in fringilla maximus.
       Sed tempus lorem non gravida fermentum.
     </p>
-    <h1 v-if="!mobileStore.mobileView" class="design-development-header">Design and Development</h1>
-    <h2 v-if="mobileStore.mobileView">Design and Development</h2>
+    <h1 class="design-development-header not-mobile-content about-header-1">
+      Design and Development
+    </h1>
+    <h2 class="mobile-content about-header-2 sub-header">Design and Development</h2>
     <div class="container-development-info">
       <div class="container-logo"><img :src="Logo" alt="DTT Logo" /></div>
       <div class="link-container">
@@ -42,7 +41,7 @@ const mobileStore = useMobileStore()
   margin: 70px auto 0;
 }
 
-.container-about-section h1 {
+.about-header-1 {
   font-family: 'Montserrat', sans-serif;
   font-size: 32px;
   font-weight: 700;
@@ -122,14 +121,14 @@ const mobileStore = useMobileStore()
     margin-top: 30px;
   }
 
-  .container-about-section h1 {
+  .about-header-1 {
     font-size: 18px;
     display: flex;
     justify-content: center;
     margin-bottom: 30px;
   }
 
-  .container-about-section h2 {
+  .about-header-2 {
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     font-weight: 700;
@@ -140,8 +139,13 @@ const mobileStore = useMobileStore()
     margin-top: 15px;
   }
 
+  .sub-header {
+    margin-top: 40px;
+  }
+
   .container-development-info {
     font-size: 14px;
+    margin-top: 20px;
   }
 
   .container-logo {
