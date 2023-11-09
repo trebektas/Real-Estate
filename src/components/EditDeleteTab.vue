@@ -8,18 +8,16 @@ import DeleteListing from './DeleteListing.vue'
 
 import { useRoute, useRouter } from 'vue-router'
 import { ref } from 'vue'
-import { useMobileStore } from '../stores/MobileStore'
 
 const props = defineProps({
   houseId: {
     type: Number
-  }
+  },
+  isMobileClass: { type: String }
 })
 
 const route = useRoute()
 const router = useRouter()
-
-const mobileStore = useMobileStore()
 
 const isDeleteFormOpen = ref(false)
 
@@ -45,14 +43,22 @@ const closeDeletePopUp = () => {
     @close-pop-up="closeDeletePopUp"
     :houseId="props.houseId"
   />
-  <div class="edit-delete-tab">
+  <div class="edit-delete-tab" :class="isMobileClass">
     <span class="edit-delete-span" @click="onEditClick"
       ><img
-        :src="props.houseId ? editIcon : mobileStore.mobileView ? editWhiteIcon : editIcon"
+        :src="
+          props.houseId ? editIcon : isMobileClass === 'mobile-content' ? editWhiteIcon : editIcon
+        "
         alt="Edit Icon" /></span
     ><span class="edit-delete-span"
       ><img
-        :src="props.houseId ? deleteIcon : mobileStore.mobileView ? deleteWhiteIcon : deleteIcon"
+        :src="
+          props.houseId
+            ? deleteIcon
+            : isMobileClass === 'mobile-content'
+            ? deleteWhiteIcon
+            : deleteIcon
+        "
         alt="Delete Icon"
         @click="openDeletePopUp"
     /></span>

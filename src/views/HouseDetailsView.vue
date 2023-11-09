@@ -7,18 +7,14 @@ import bedIcon from '../assets/icons/ic_bed@3x.png'
 import bathIcon from '../assets/icons/ic_bath@3x.png'
 import garageIcon from '../assets/icons/ic_garage@3x.png'
 
-import BackToOverview from '../components/BackToOverview.vue'
-
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
-import { useMobileStore } from '../stores/MobileStore'
+
+import BackToOverview from '../components/BackToOverview.vue'
 import EditDeleteTab from '../components/EditDeleteTab.vue'
 import { apiService } from '../services/apiService'
 
 const route = useRoute()
-
-const mobileStore = useMobileStore()
-
 const houseDetails = ref([])
 
 //get house details data
@@ -38,8 +34,8 @@ function formatPrice(price) {
     <div class="container-house-details">
       <div v-if="houseDetails" class="house-details">
         <div v-for="house in houseDetails" :key="house.id">
-          <!--Edit/Delete tab conditions for mobile >> house.madeByMe && mobileStore.mobileView-->
-          <EditDeleteTab v-if="house.madeByMe && mobileStore.mobileView" />
+          <!--Edit/Delete tab conditions for mobile >> house.madeByMe && mobile-content class-->
+          <EditDeleteTab v-if="house.madeByMe" isMobileClass="mobile-content" />
           <div class="house-details-image"><img :src="house.image" :alt="house.id" /></div>
           <div class="house-details-section">
             <div class="container-house-address">
@@ -47,8 +43,8 @@ function formatPrice(price) {
                 {{ house.location.street }}
                 {{ house.location.houseNumber }}
               </div>
-              <!--Edit/Delete tab conditions for desktop >> house.madeByMe && !mobileStore.mobileView-->
-              <EditDeleteTab v-if="house.madeByMe && !mobileStore.mobileView" />
+              <!--Edit/Delete tab conditions for desktop >> house.madeByMe && not-mobile-content class-->
+              <EditDeleteTab v-if="house.madeByMe" isMobileClass="not-mobile-content" />
             </div>
 
             <div class="house-details-location">
